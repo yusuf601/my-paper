@@ -1,0 +1,58 @@
+# Core LaTeX aux files
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+
+# Intermediate docs
+*.dvi
+*.xdv
+*-converted-to.*
+
+# Sync / editor helpers
+*.synctex.gz
+*.synctex.gz(busy)
+
+# BibTeX / Biber
+*.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+
+# Latexmk
+*.fdb_latexmk
+*.synctex(busy)
+
+# Beamer
+*.nav
+*.snm
+*.vrb
+
+# Other packages
+*.run.xml
+*.tocloft
+*.bak
+*.backup
+
+# Output
+*.pdf
+*.ps
+*.eps
+/build/
+out/
+_output/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

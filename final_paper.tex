@@ -1,0 +1,334 @@
+\documentclass[10pt,a4paper]{article}
+
+% Package yang diperlukan
+\usepackage[utf8]{inputenc}
+\usepackage[bahasa]{babel}
+\usepackage{times}
+\usepackage[top=1.9cm, bottom=4.3cm, left=2cm, right=1.43cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{float}
+
+
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+% Format section
+\titleformat{\section}
+  {\normalfont\fontsize{10}{12}\bfseries\scshape\centering}{\Roman{section}.}{0.5em}{}
+\titleformat{\subsection}
+  {\normalfont\fontsize{10}{12}\bfseries\itshape}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}[runin]
+  {\normalfont\fontsize{10}{12}\itshape}{\arabic{subsubsection})}{0.5em}{}[:]
+
+% Spacing
+\setlength{\parindent}{0.5cm}
+\setlength{\parskip}{0pt}
+\renewcommand{\baselinestretch}{1.0}
+
+% Caption format
+\captionsetup[figure]{font=small,labelfont=bf,justification=centering}
+\captionsetup[table]{font={small,sc},labelfont=bf,justification=centering}
+
+\begin{document}
+
+% Header informasi jurnal
+\noindent
+\begin{minipage}{0.5\textwidth}
+\small p-ISSN : 2443-2210\\
+e-ISSN : 2443-2229
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\raggedleft
+\small Jurnal Teknik Informatika dan Sistem Informasi\\
+Volume x Nomor x Bulan 20xx
+\end{minipage}
+
+\vspace{0.3cm}
+\noindent\rule{\textwidth}{0.4pt}
+
+% Judul
+\begin{center}
+{\fontsize{24}{28}\selectfont\bfseries Segmentasi Provinsi Rawan Krisis Pangan Berdasarkan Pola Volatilitas Harga Komoditas Menggunakan Fuzzy C-Means Clustering\par}
+\vspace{0.3cm}
+\end{center}
+
+\vspace{0.3cm}
+
+\vspace{0.4cm}
+
+% Penulis
+\begin{center}
+{\fontsize{11}{13}\selectfont\bfseries Muh Yusuf$^{1}$\par}
+
+\vspace{0.3cm}
+
+{\fontsize{10}{12}\selectfont\itshape
+$^{1}$Teknik Informatika, Fakultas Teknik\\
+Universitas Halu Oleo\\
+Jl. H.E.A. Mokodompit, Kendari, Sulawesi Tenggara 93232\\
+{\fontsize{9}{11}\selectfont\ttfamily $^{1}$muhyusuf@uho.ac.id}
+
+\vspace{0.2cm}
+
+Corresponding author: muhyusuf@uho.ac.id
+\par}
+\end{center}
+
+\vspace{0.4cm}
+
+% Abstrak
+\noindent
+\textbf{\textit{Abstrak}} — Ketahanan pangan merupakan isu strategis di Indonesia karena perbedaan kondisi sosial-ekonomi dan volatilitas harga pangan antar provinsi yang berpotensi menurunkan daya beli rumah tangga. Penelitian ini bertujuan melakukan segmentasi provinsi di Indonesia berdasarkan pola harga komoditas pangan untuk memetakan tingkat kerawanan krisis pangan secara data-driven. Metode yang digunakan adalah algoritma Fuzzy C-Means (FCM) yang memungkinkan setiap provinsi memiliki derajat keanggotaan pada lebih dari satu cluster risiko, sehingga lebih sesuai merepresentasikan kondisi ketahanan pangan yang bersifat gradual. Data penelitian berupa deret waktu harga harian sebelas komoditas pangan strategis di 34 provinsi Indonesia yang diekstraksi menjadi fitur statistik dan temporal seperti rata-rata harga, volatilitas (coefficient of variation), tren, autokorelasi, dan skewness. Konfigurasi cluster optimal dipilih berdasarkan kombinasi metrik evaluasi Silhouette Score, Davies-Bouldin Index, Fuzzy Partition Coefficient, dan Partition Entropy. Hasil clustering menghasilkan beberapa kelompok provinsi dengan karakteristik pola harga dan tingkat volatilitas yang berbeda, yang dapat diinterpretasikan sebagai tingkatan risiko kerawanan pangan mulai dari rendah hingga tinggi. Pemetaan ini dapat dimanfaatkan sebagai dasar penyusunan prioritas intervensi kebijakan ketahanan pangan yang lebih terarah dan efektif di tingkat regional
+
+\vspace{0.2cm}
+\noindent
+\textbf{\textit{Kata kunci}}— \textit{food security, clustering, fuzzy C-Means, food crisis}
+
+\vspace{0.4cm}
+
+% Abstract in English
+\noindent
+\textbf{\textit{Segmentasi Provinsi Rawan Krisis pangan Berdasarkan Pola Harga Komoditas Pangan Menggunakan Algoritma Fuzzy C-Means Clustering}}
+
+\vspace{0.1cm}
+\noindent
+\textbf{\textit{Abstract}} — Food security is a strategic issue in Indonesia due to differences in socio-economic conditions and food price volatility across provinces, which can potentially reduce household purchasing power. This study aims to segment provinces in Indonesia based on food commodity price patterns to map food crisis vulnerability levels in a data-driven manner. The method used is the Fuzzy C-Means (FCM) algorithm, which allows each province to have membership degrees in more than one risk cluster, making it more suitable for representing the gradual nature of food security conditions. The research data consists of daily price time series of eleven strategic food commodities across 34 provinces in Indonesia, which are extracted into statistical and temporal features such as mean price, volatility (coefficient of variation), trend, autocorrelation, and skewness. The optimal cluster configuration is selected based on a combination of evaluation metrics including Silhouette Score, Davies-Bouldin Index, Fuzzy Partition Coefficient, and Partition Entropy. The clustering results produce several provincial groups with different price pattern characteristics and volatility levels, which can be interpreted as food vulnerability risk levels ranging from low to high. This mapping can be utilized as a basis for formulating more targeted and effective food security policy intervention priorities at the regional level.
+
+\vspace{0.2cm}
+\noindent
+\textbf{\textit{Keywords}}— \textit{food security, clustering, fuzzy C-Means, food crisis}
+
+\vspace{0.4cm}
+
+% Konten utama
+\section{Pendahuluan}
+
+Ketahanan pangan merupakan salah satu isu strategis nasional yang menjadi prioritas pembangunan Indonesia. Dengan wilayah geografis yang luas mencakup 34 provinsi dan karakteristik geografis kepulauan yang kompleks, Indonesia menghadapi tantangan signifikan dalam menjamin ketersediaan dan aksesibilitas pangan yang merata bagi seluruh masyarakat. Disparitas harga komoditas pangan antar daerah menjadi permasalahan serius yang dapat memicu ketidakstabilan pasokan dan berpotensi menyebabkan krisis pangan regional. Menurut Food and Agriculture Organization (FAO), ketahanan pangan tidak hanya mencakup aspek ketersediaan dan akses, tetapi juga stabilitas pasokan yang tercermin melalui kestabilan harga komoditas pangan dari waktu ke waktu\cite{ref1}.
+
+Stabilitas harga merupakan salah satu pilar fundamental dalam ketahanan pangan karena volatilitas harga yang tinggi dapat mengganggu daya beli masyarakat dan mengancam akses terhadap pangan, terutama bagi kelompok rentan. Penelitian terkini menunjukkan adanya fenomena \textit{spillover effect} volatilitas harga pangan antar provinsi di Indonesia, di mana Pulau Jawa berperan sebagai \textit{transmitter} utama dengan korelasi volatilitas mencapai 0.92 ke Sumatra, 0.91 ke Kalimantan, dan 0.90 ke Papua \cite{ref2}. Lebih lanjut \cite{ref3}, Studi mengenai volatilitas harga pangan selama periode Covid-19 menemukan adanya hubungan jangka panjang antara fluktuasi harga komoditas strategis seperti cabai, beras, bawang merah, bawang putih, dan ayam dengan volatilitas inflasi regional. Temuan ini menunjukkan bahwa volatilitas harga pangan tidak hanya mencerminkan dinamika pasar lokal, tetapi juga dapat digunakan sebagai indikator awal terhadap potensi gangguan stabilitas ekonomi dan ketahanan pangan di tingkat wilayah.
+
+Dalam konteks metodologi clustering untuk data \textit{time series}, pendekatan berbasis karakteristik statistik telah banyak digunakan untuk menangkap dinamika sistem yang kompleks dan tidak stabil. Penelitian mengenai \textit{autocorrelation-based fuzzy clustering} menunjukkan bahwa penggunaan fungsi autokorelasi sebagai basis pengelompokan memberikan fleksibilitas yang lebih tinggi, karena setiap \textit{time series} tidak ditetapkan secara eksklusif ke satu klaster, melainkan memiliki derajat keanggotaan terhadap beberapa klaster sekaligus. Pendekatan ini sangat relevan untuk data ekonomi dan finansial, termasuk harga pangan, yang cenderung mengandung \textit{noise} tinggi dan perilaku dinamis.
+
+Berbagai penelitian telah dilakukan untuk menganalisis pola harga dan ketahanan pangan di Indonesia menggunakan pendekatan clustering. Salah satu penelitian menerapkan metode \textit{Dynamic Time Warping} (DTW) untuk melakukan \textit{time series clustering} harga beras di 34 provinsi, yang mengelompokkan wilayah berdasarkan kesamaan pola temporal harga \cite{ref4}. Pendekatan serupa juga diterapkan dalam peramalan harga beras menggunakan hierarchical clustering dengan DTW distance, yang menghasilkan cophenetic coefficient sebesar 0.68 dan mengidentifikasi Kalimantan Tengah sebagai outlier. Studi lain menggunakan kombinasi metode hard clustering seperti K-Means dan K-Medoids serta soft clustering seperti Fuzzy C-Means untuk mengelompokkan 34 provinsi berdasarkan indikator ketahanan pangan dari BPS, dengan hasil menunjukkan bahwa K-Means menghasilkan dua klaster optimal yang memisahkan delapan provinsi rawan pangan dari 26 provinsi tahan pangan \cite{ref5}.
+
+
+Studi lain yang menerapkan \textit{quantile-based fuzzy clustering} dengan memanfaatkan fitur \textit{conditional variance}, \textit{skewness}, dan \textit{kurtosis} menunjukkan bahwa momen statistik tingkat tinggi dapat menjadi dasar pengelompokan yang lebih robust, khususnya dalam menghadapi keberadaan \textit{outlier} \cite{ref6}. Selain itu, penelitian mengenai \textit{resilience indicators} pada data longitudinal juga memanfaatkan kombinasi \textit{variance}, \textit{lag-1 autocorrelation}, dan \textit{skewness} sebagai indikator fluktuasi dan ketahanan sistem terhadap gangguan eksternal \cite{ref7}, yang sejalan dengan karakteristik dinamika harga pangan antarwilayah.
+
+% research gap
+Meskipun berbagai studi telah dilakukan untuk menganalisis pola harga dan ketahanan pangan di Indonesia, terdapat beberapa keterbatasan yang dapat diidentifikasi. Pertama, sebagian besar penelitian menggunakan pendekatan DTW distance yang berfokus pada kesamaan bentuk pola time series secara keseluruhan, namun kurang mengeksplorasi karakteristik statistik spesifik yang mencerminkan volatilitas, persistensi, dan distribusi harga. Kedua, penelitian clustering ketahanan pangan yang ada lebih banyak menggunakan indikator statis dari BPS, sementara analisis berbasis pola harga sebagai early warning system masih terbatas. Ketiga, metode hard clustering seperti K-Means menghasilkan pengelompokan yang rigid dan tidak mampu menangani overlapping characteristics antar provinsi, padahal dalam realitas, banyak provinsi yang memiliki karakteristik pola harga yang berada di zona transisi. Keempat, belum ada penelitian yang secara komprehensif mengintegrasikan lima karakteristik statistik time series (mean, coefficient of variation, autocorrelation, trend, dan skewness) sebagai feature untuk segmentasi provinsi berdasarkan pola volatilitas harga komoditas pangan strategis.
+
+% solusi yang ditawarkan
+
+Untuk mengatasi keterbatasan tersebut, penelitian ini mengusulkan pendekatan berbasis algoritma \textit{Fuzzy C-Means} (FCM) clustering sebagai kontribusi utama. FCM memberikan derajat keanggotaan (\textit{membership degree}) yang fleksibel, sehingga setiap provinsi dapat memiliki tingkat keanggotaan pada lebih dari satu klaster secara simultan. Karakteristik ini sangat sesuai untuk data harga komoditas pangan yang bersifat dinamis dan fluktuatif, di mana batas antar kelompok wilayah tidak selalu tegas. 
+
+Selain itu, FCM relatif lebih robust dalam menghadapi ketidakpastian data dan mampu merepresentasikan sifat \textit{fuzzy} dari fenomena ekonomi, di mana suatu wilayah dapat berada dalam kondisi transisi antara stabil dan rawan. Dengan mengintegrasikan lima fitur statistik \textit{time series}—yaitu \textit{mean}, \textit{coefficient of variation}, \textit{autocorrelation}, \textit{trend}, dan \textit{skewness}—penelitian ini memberikan kerangka analisis yang lebih komprehensif untuk mengkarakterisasi dinamika volatilitas harga komoditas pangan antarprovinsi, serta mendukung identifikasi risiko ketahanan pangan secara lebih informatif.
+
+% tujuan penelitian
+Penelitian ini bertujuan untuk melakukan segmentasi 34 provinsi di Indonesia berdasarkan pola volatilitas harga 10 komoditas pangan strategis menggunakan algoritma Fuzzy C-Means Clustering. Analisis dilakukan untuk mengidentifikasi karakteristik cluster yang terbentuk dan menentukan provinsi-provinsi yang memiliki pola volatilitas harga tinggi yang mengindikasikan kerentanan terhadap krisis pangan. Hasil penelitian menunjukkan terbentuknya dua cluster optimal yang dapat digunakan sebagai dasar sistem peringatan dini (early warning system) bagi pengambil kebijakan. Kontribusi penelitian ini meliputi: (1) penyediaan metode segmentasi wilayah berbasis pola volatilitas harga yang lebih fleksibel dan robust melalui pendekatan fuzzy clustering; (2) identifikasi provinsi-provinsi prioritas yang memerlukan intervensi kebijakan stabilisasi harga seperti subsidi, operasi pasar, atau penguatan buffer stock; (3) pengembangan framework analisis yang mengintegrasikan multiple time series features untuk early warning system krisis pangan; dan (4) rekomendasi kebijakan yang berbasis evidence untuk penguatan ketahanan pangan regional di Indonesia.
+
+\section{Metode Penelitian}
+Penelitian ini dilakukan melalui beberapa tahapan sistematis untuk melakukan segmentasi provinsi berdasarkan pola volatilitas harga komoditas pangan menggunakan algoritma Fuzzy C-Means Clustering. Alur penelitian secara keseluruhan ditunjukkan pada Gambar \ref{fig:flowchart}. Tahapan penelitian dimulai dari pengumpulan data time series harga komoditas pangan dari 34 provinsi di Indonesia, dilanjutkan dengan preprocessing data untuk memastikan kualitas dan konsistensi data. Selanjutnya dilakukan ekstraksi fitur statistik time series yang mencakup mean, coefficient of variation, autocorrelation, trend, dan skewness untuk merepresentasikan karakteristik pola harga di setiap provinsi. Fitur-fitur tersebut kemudian menjadi input untuk algoritma Fuzzy C-Means Clustering yang menghasilkan segmentasi provinsi ke dalam beberapa cluster. Jumlah cluster optimal ditentukan melalui evaluasi menggunakan beberapa indeks validasi cluster. Terakhir, dilakukan karakterisasi dan interpretasi setiap cluster untuk mengidentifikasi provinsi-provinsi yang rawan krisis pangan berdasarkan pola volatilitas harga komoditas. Penjelasan detail dari setiap tahapan penelitian diuraikan pada subsection berikut.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{flowchart.jpg}
+    \caption{Alur Penelitian Segmentasi Provinsi Rawan Krisis Pangan}
+    \label{fig:flowchart}
+\end{figure}
+\subsection{Data dan Sumber Data}
+
+Penelitian ini menggunakan data time series harga komoditas pangan yang bersumber dari Kaggle \cite{ref8}. Dataset terdiri dari 13 komoditas pangan strategis dengan periode observasi dari Januari 2022 hingga September 2024. Setiap dataset merepresentasikan harga satu komoditas untuk 34 provinsi di Indonesia dalam format mingguan. Total observasi mencakup 34 provinsi $\times$ 143 minggu $\times$ 13 komoditas, menghasilkan 63.206 data point harga komoditas pangan.
+
+Tiga belas komoditas pangan yang dianalisis dalam penelitian ini meliputi:
+\begin{enumerate}
+    \item Bawang merah
+    \item Bawang putih bonggol
+    \item Beras medium
+    \item Beras premium
+    \item Cabai merah keriting
+    \item Cabai rawit merah
+    \item Daging ayam ras
+    \item Daging sapi murni
+    \item Gula konsumsi
+    \item Minyak goreng curah
+    \item Minyak goreng kemasan
+    \item Telur ayam ras
+    \item Tepung terigu curah
+\end{enumerate}
+
+Format data yang digunakan adalah \textit{cross-sectional time series} (panel data), di mana setiap dataset komoditas memiliki struktur dengan kolom representasi provinsi dan baris representasi periode waktu. Contoh struktur data untuk komoditas bawang merah ditunjukkan pada Tabel \ref{tab:sample_data}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Contoh Struktur Data Harga Komoditas Bawang Merah (dalam Rupiah)}
+    \label{tab:sample_data}
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \textbf{Date} & \textbf{Aceh} & \textbf{Bali} & \textbf{Banten} & \textbf{Bengkulu} & \textbf{...} \\ 
+        \hline
+        2022-01-01 & 28.970 & 20.870 & 26.890 & 26.650 & ... \\
+        \hline
+        2022-01-02 & 29.900 & 20.710 & 25.600 & 26.950 & ... \\
+        \hline
+        2022-01-03 & 28.970 & 20.510 & 26.390 & 27.290 & ... \\
+        \hline
+        \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Setiap baris pada dataset merepresentasikan harga komoditas pada tanggal tertentu, sedangkan setiap kolom merepresentasikan provinsi di Indonesia. Data harga dinyatakan dalam satuan Rupiah per kilogram untuk seluruh komoditas.
+
+\subsection{Preprocessing}
+
+Explaratory data analisis(EDA) awal terhadap 13 komoditas pangan menunjukkan adanya missing value dengan proporsi yang berbeda-beda,untuk memastikan kualitas dan reliabilitas analisis clustering clustering,dilakukan evaluasi sistematis terhadap pola missing value setiap komoditas.
+
+\text{Tahap 1: Identifikasi komoditas dengan Missing Value Ekstrem}
+
+Analisis missing value per komoditas menunjukkan bahwa dua komoditas memiliki proporsi missing value yang sangat tinggi:
+
+\begin{itemize}
+    \item \textbf{Cabai Rawit Merah}: 80.78\% baris mengandung missing value, dengan Provinsi Aceh mencatat 77.89\% missing dari total observasi
+    \item \textbf{Minyak Goreng Curah}: 48.01\% baris mengandung missing value, dengan beberapa provinsi seperti Maluku Utara (34.26\%), Kalimantan Utara (29.68\%), dan Papua (19.62\%) memiliki missing value substansial
+\end{itemize}
+
+Kedua komoditas ini di-drop dari analisis dengan pertimbangan:
+\begin{enumerate}
+    \item Proporsi missing value yang sangat tinggi (>40\%) dapat menghasilkan bias signifikan dalam imputasi
+    \item Missing value yang ekstrem pada provinsi-provinsi tertentu mengindikasikan potensi systematic data collection issues
+    \item Imputasi pada data dengan missing ekstrem akan lebih banyak menghasilkan data sintetik dibanding data observasi aktual, yang bertentangan dengan prinsip analisis berbasis evidence
+\end{enumerate}
+
+Setelah penghapusan dua komoditas tersebut, tersisa 11 komoditas untuk analisis lebih lanjut.
+
+\text{Tahap 2: Analisis Pola Missing Value}
+
+untuk 11 komoditas tersisa dilakukan,dilakukan analisis pola missing value menggunakan heatmap untuk mengidentifikasi temporal pattern dari missing data gambar\ref{fig:missing_heatmap},dapat terlihat jika komoditas minyak goreng kemasan memiliki korelasi yang tidak cukup kuat sementara 10 komoditas lain justri identik dengan nilai $\approx 1$
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{heatmap_missing correlation.png}
+    \caption{Heatmap korelasi missing antar komoditas}
+    \label{fig:missing_heatmap}
+\end{figure}
+
+lebih lanjut pada gambar\ref{fig:overlap_missing} terlihat bahwa komoditas minyak goreng kemasan memiliki unique \textit{missing value} dimana 10 komoditas lain hari missing data hanya 46 hari sementara komoditas minyak goreng kemasan justru sampai 93 hari,ini juga semakin menegaskan bahwa tipe missing pada dataset adalah \textit{Missing Completely at Random} (MCAR),sementara itu pada komoditas minyak goreng dengan missing \textit{unique} maka kemunkinan missing adalah  \textit{Missing at Random} (MAR) atau \textit{Missing Not at Random} (MNAR).
+
+Mengingat perbedaan mekanisme missing dapat mengintroduksi bias dalam analisis clustering dan mengurangi homogenitas karakteristik data, komoditas dengan pola missing unik ini di-drop dari analisis. Keputusan ini juga didukung oleh prinsip bahwa mixing data dengan mekanisme missing yang berbeda dapat menghasilkan estimasi parameter yang bias dan inference yang tidak valid.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{overlap_missing_days.png}
+    \caption{Heatmap overlap missing day}
+    \label{fig:overlap_missing}
+\end{figure}
+\section{Hasil dan Pembahasan}
+
+% Hasil dan pembahasan menjelaskan hasil penelitian yang disertai dengan pembahasan atau diskusi yang bersifat komprehensif. Hasil penelitian dapat disajikan dalam bentuk tabel, gambar atau grafik atau bentuk visualisasi yang dapat dipahami pembaca dengan lebih baik.
+
+% \subsection{Hasil Analisis Deskriptif}
+
+% Hasil analisis deskriptif menunjukkan bahwa mayoritas responden (75\%) menyatakan bahwa sistem yang dikembangkan memberikan manfaat positif terhadap efisiensi kerja. Tabel \ref{tab:hasil} menunjukkan distribusi responden berdasarkan tingkat kepuasan.
+
+% \begin{table}[h]
+% \centering
+% \caption{Distribusi Tingkat Kepuasan Pengguna}
+% \label{tab:hasil}
+% \begin{tabular}{|l|c|c|}
+% \hline
+% \textbf{Kategori} & \textbf{Jumlah} & \textbf{Persentase} \\
+% \hline
+% Sangat Puas & 25 & 25\% \\
+% Puas & 50 & 50\% \\
+% Cukup Puas & 20 & 20\% \\
+% Kurang Puas & 5 & 5\% \\
+% \hline
+% \textbf{Total} & \textbf{100} & \textbf{100\%} \\
+% \hline
+% \end{tabular}
+% \end{table}
+
+% \subsection{Hasil Pengujian Sistem}
+
+% Pengujian sistem dilakukan menggunakan metode black box testing dan white box testing. Hasil pengujian menunjukkan bahwa sistem berjalan dengan baik tanpa error kritis. Gambar \ref{fig:arsitektur} menunjukkan arsitektur sistem yang dikembangkan.
+
+% \begin{figure}[h]
+% \centering
+% \includegraphics[width=0.7\textwidth]{contoh-gambar.png}
+% \caption{Arsitektur Sistem Informasi yang Dikembangkan}
+% \label{fig:arsitektur}
+% \end{figure}
+
+% \subsection{Pembahasan}
+
+% Berdasarkan hasil analisis, dapat disimpulkan bahwa implementasi sistem informasi yang tepat dapat meningkatkan efisiensi organisasi secara signifikan. Temuan ini sejalan dengan penelitian sebelumnya yang dilakukan oleh \cite{ref2}, \cite{ref3}. Namun demikian, penelitian ini memberikan kontribusi tambahan berupa framework implementasi yang lebih terstruktur.
+
+% Perhitungan efisiensi menggunakan formula sebagai berikut:
+
+% \begin{equation}
+% E = \frac{O - I}{I} \times 100\%
+% \label{eq:efisiensi}
+% \end{equation}
+
+% dimana $E$ adalah tingkat efisiensi, $O$ adalah output yang dihasilkan, dan $I$ adalah input yang digunakan.
+
+% Hasil perhitungan menggunakan persamaan (\ref{eq:efisiensi}) menunjukkan bahwa terjadi peningkatan efisiensi sebesar 35\% setelah implementasi sistem.
+
+% \section{Simpulan}
+
+% Simpulan berisi pernyataan yang merujuk pada tujuan penelitian yang dihubungkan dengan hasil dan pembahasan dari penelitian. Berdasarkan hasil penelitian dan pembahasan, dapat disimpulkan bahwa framework yang dikembangkan terbukti efektif dalam meningkatkan efisiensi implementasi sistem informasi di organisasi. Peningkatan efisiensi rata-rata mencapai 35\% dengan tingkat kepuasan pengguna sebesar 75\%. Framework ini dapat menjadi panduan bagi organisasi lain yang ingin mengimplementasikan sistem informasi dengan lebih terstruktur dan sistematis. Penelitian lanjutan dapat dilakukan untuk menguji efektivitas framework ini pada berbagai jenis organisasi dengan karakteristik yang berbeda.
+
+% \section*{Ucapan Terima Kasih}
+
+% Ucapan terima kasih disampaikan kepada Universitas XYZ yang telah mendanai penelitian ini melalui Hibah Penelitian Internal tahun 2024. Terima kasih juga kepada semua pihak yang telah membantu dalam proses penelitian ini.
+
+\begin{thebibliography}{10}
+\bibitem{ref1}
+FAO, ``Food Security,'' \textit{FAO Policy Brief}, no.~2, Rome, 2006.
+\bibitem{ref2}
+A. Theresia, M. Ikhsan, F. N. Kacaribu, et al., ``Spillover Effect of Food Producer Price Volatility in Indonesia,'' \textit{Economies}, vol. 13, no. 9, p. 256, 2025.
+\bibitem{ref3}
+C.~J.~Anwar, I.~Suhendra, A.~Srimulyani, V.~M.~Zahara, R.~A.~F.~Ginanjar, and S.~C.~Suci,
+``Food Price and Inflation Volatilities during Covid-19 Period: Empirical Study of a Region in Indonesia,''
+\textit{WSEAS Transactions on Business and Economics},
+vol.~20, pp.~1839--1848, 2023,
+doi:10.37394/23207.2023.20.161.
+
+\bibitem{ref4}
+A.~H.~Rizaldi, I.~M.~D.~Utama, and R.~Andriani,
+``Implementation of Time Series Clustering with DTW to Clustering and Forecasting Rice Prices Each Provinces in Indonesia,''
+\textit{INFERENSI: Jurnal Statistika dan Aplikasinya},
+vol.~9, no.~1, pp.~1--12, 2025.
+
+
+\bibitem{ref5}
+W.~W.~Prastanika and A.~W.~Wijayanto,
+``Analisis Hard dan Soft Clustering Untuk Pengelompokan Indikator Ketahanan Pangan Indonesia 2021,''
+\textit{JUSTIN (Jurnal Sistem dan Teknologi Informasi)},
+vol.~11, no.~4, pp.~596--604, Oct.~2023,
+doi:10.26418/justin.v11i4.68400.
+
+\bibitem{ref6}
+A.~López-Oriona, J.~A.~Vilar, and P.~D’Urso,
+``Quantile-based fuzzy clustering of multivariate time series in the frequency domain,''
+\textit{Fuzzy Sets and Systems},
+preprint, arXiv:2109.03728, 2021.
+
+\bibitem{ref7}
+Poppe, M., Veerkamp, R.F., van Pelt, M.L., \& Mulder, H.A. (2020). 
+Exploration of variance, autocorrelation, and skewness of deviations from lactation curves as resilience indicators for breeding. 
+\textit{Journal of Dairy Science}, 103(2), 1667--1684. 
+https://doi.org/10.3168/jds.2019-17290
+
+\bibitem{ref8} Datavidia, ``Indonesia Commodity Price,'' Kaggle, 2025. [Online]. Tersedia: https://www.kaggle.com/datasets/datavidia/indonesia-commodity-price/data. [Diakses: Des. 2025].
+
+\end{thebibliography}
+
+\end{document}
