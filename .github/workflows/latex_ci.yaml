@@ -21,4 +21,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: paper-pdf
-          path: final_paper.tex
+          path: final_paper.pdf
