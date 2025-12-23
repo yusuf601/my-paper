@@ -15,8 +15,10 @@
 \usepackage{titlesec}
 \usepackage{enumitem}
 \usepackage{float}
-
-
+\usepackage{booktabs}
+\usepackage{amssymb}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 % Format section
 \titleformat{\section}
@@ -54,7 +56,7 @@ Volume x Nomor x Bulan 20xx
 
 % Judul
 \begin{center}
-{\fontsize{24}{28}\selectfont\bfseries Segmentasi Provinsi Rawan Krisis Pangan Berdasarkan Pola Volatilitas Harga Komoditas Menggunakan Fuzzy C-Means Clustering\par}
+{\fontsize{24}{28}\selectfont\bfseries Segmentation of Provinces Prone to Food Crises Based on Commodity Price Volatility Patterns Using Fuzzy C-Means Clustering\par}
 \vspace{0.3cm}
 \end{center}
 
@@ -209,7 +211,7 @@ Setelah penghapusan dua komoditas tersebut, tersisa 11 komoditas untuk analisis 
 
 \text{Tahap 2: Analisis Pola Missing Value}
 
-untuk 11 komoditas tersisa dilakukan,dilakukan analisis pola missing value menggunakan heatmap untuk mengidentifikasi temporal pattern dari missing data gambar\ref{fig:missing_heatmap},dapat terlihat jika komoditas minyak goreng kemasan memiliki korelasi yang tidak cukup kuat sementara 10 komoditas lain justri identik dengan nilai $\approx 1$
+untuk 11 komoditas tersisa dilakukan analisis pola missing value menggunakan heatmap untuk mengidentifikasi temporal pattern dari missing data gambar\ref{fig:missing_heatmap},dapat terlihat jika komoditas minyak goreng kemasan memiliki korelasi yang tidak cukup kuat sementara 10 komoditas lain justru identik dengan nilai $\approx 1$
 
 \begin{figure}[htbp]
     \centering
@@ -222,6 +224,9 @@ lebih lanjut pada gambar\ref{fig:overlap_missing} terlihat bahwa komoditas minya
 
 Mengingat perbedaan mekanisme missing dapat mengintroduksi bias dalam analisis clustering dan mengurangi homogenitas karakteristik data, komoditas dengan pola missing unik ini di-drop dari analisis. Keputusan ini juga didukung oleh prinsip bahwa mixing data dengan mekanisme missing yang berbeda dapat menghasilkan estimasi parameter yang bias dan inference yang tidak valid.
 
+Pada data harga 10 komoditas terpilih, ditemukan periode dengan missing value yang terjadi secara serentak pada rentang tanggal 10 Juni 2022 hingga 19 Juni 2022. Periode ini selanjutnya disebut sebagai \textit{black period}, karena seluruh komoditas tidak memiliki observasi harga pada rentang waktu tersebut.
+
+Sebagai tindak lanjut, seluruh observasi pada rentang \textit{black period} tersebut dihapus dari dataset dengan tujuan untuk menghindari distorsi pada proses ekstraksi fitur statistik, khususnya pada perhitungan autokorelasi, tren jangka panjang, dan ukuran volatilitas. Keberadaan periode tanpa observasi secara kolektif berpotensi mengganggu kontinuitas deret waktu dan menghasilkan estimasi parameter yang tidak stabil, sehingga penghapusan periode ini dilakukan untuk menjaga integritas analisis dan konsistensi pola temporal data.
 
 \begin{figure}[H]
     \centering
@@ -229,8 +234,225 @@ Mengingat perbedaan mekanisme missing dapat mengintroduksi bias dalam analisis c
     \caption{Heatmap overlap missing day}
     \label{fig:overlap_missing}
 \end{figure}
-\section{Hasil dan Pembahasan}
 
+Selanjutnya setelah mengatasi missing value,dibutuhkan juga pendeteksian data anomali atau \textit{outliers} dan metode untuk menangani \textit{outliers}.Outlier pada data harga komoditas dapat berasal dari noise atau genuine extreme events seperti lonjakan harga akibat gangguan pasokan. Untuk menangani outlier tanpa menghilangkan informasi penting tentang volatilitas, digunakan pendekatan adaptive IQR-based outlier detection dengan strategi yang disesuaikan untuk setiap komoditas.
+
+\text{tahap1: Deteksi Outliers}
+Penanganan outlier pada data harga komoditas dilakukan secara adaptif berdasarkan tingkat volatilitas relatif yang diukur menggunakan coefficient of variation (CV). Pendekatan ini digunakan untuk menyesuaikan sensitivitas deteksi outlier terhadap karakteristik fluktuasi masing-masing komoditas, sehingga lonjakan harga yang bersifat struktural tidak keliru diidentifikasi sebagai noise. 
+
+Tabel~\ref{tab:outlier_strategy} merangkum nilai CV, ambang deteksi outlier berbasis interquartile range (IQR), serta batas interpolasi yang digunakan untuk setiap komoditas. Komoditas dengan tingkat volatilitas tinggi diberikan ambang IQR yang lebih longgar untuk menjaga pola lonjakan harga alami, sementara komoditas yang relatif stabil diperlakukan dengan kriteria yang lebih ketat. Pendekatan ini memungkinkan proses pembersihan data yang kontekstual tanpa menghilangkan informasi volatilitas yang relevan untuk analisis lanjutan.
+
+\begin{table}[H]
+\caption{Strategi penanganan outlier adaptif berbasis coefficient of variation (CV) pada masing-masing komoditas pangan}
+\label{tab:outlier_strategy}
+\centering
+\begin{tabular}{lcccc}
+\hline
+Komoditas      & CV   & CV\_std & Outliers (3$\times$) & Recommended IQR \\ \hline
+Cabai Merah    & 0.33 & 0.082   & 0.0\%                & 6$\times$       \\
+Bawang Merah   & 0.27 & 0.041   & 0.2\%                & 5$\times$       \\
+Bawang Putih   & 0.22 & 0.029   & 0.0\%                & 5$\times$       \\
+Telur Ayam     & 0.13 & 0.014   & 0.22\%               & 4$\times$       \\
+Daging Ayam    & 0.16 & 0.022   & 0.0\%                & 4.5$\times$     \\
+Beras Premium  & 0.13 & 0.022   & 0.0\%                & 4$\times$       \\
+Beras Medium   & 0.13 & 0.025   & 0.0\%                & 4$\times$       \\
+Gula           & 0.11 & 0.008   & 0.0\%                & 4$\times$       \\
+Tepung Terigu  & 0.11 & 0.015   & 0.003\%              & 4$\times$       \\
+Daging Sapi    & 0.09 & 0.010   & 0.0\%                & 4$\times$       \\ \hline
+\end{tabular}
+\end{table}
+
+\text{Tahap2: Membersihkan outliers dan melakukani imputasi}
+
+setelah mengidentifikasi tipe outliers pada tiap komoditas,maka selanjutnya adalah menghapus outliers dan melakukan impututasi pada data tersisa,pada tabel \ref{tab:missing_after_cleaning} setelah melakukan cleaning pada outliers dan melakukan imputasi dengan metode interpolasi linear sisa missing value pada sebagian besar komoditas sudah tidak ada sementara itu untuk komoditas Cabai merah masih tersisa 140(15\%) data dan pada komoditas daging sapi 459 data(47\%),komoditas tersebut masih akan dipertahankan karena data valid masih diatas threshold minimal yaitu 50\%.
+
+\begin{table}[H]
+\caption{Jumlah missing value setelah proses pembersihan pada masing-masing komoditas}
+\label{tab:missing_after_cleaning}
+\centering
+\begin{tabular}{lc}
+\hline
+Komoditas       & Missing After \\ \hline
+Bawang Merah    & 0  \\
+Beras Medium    & 0  \\
+Beras Premium   & 0  \\
+Telur Ayam      & 0  \\
+Gula            & 0  \\
+Bawang Putih    & 0  \\
+Cabai Merah     & 140 \\
+Daging Ayam Ras & 0  \\
+Daging Sapi     & 459 \\
+Tepung Terigu   & 0  \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Feature Extraction}
+
+Algoritma \textit{Fuzzy C-Means} membutuhkan representasi numerik dari pola harga \textit{time series} untuk melakukan proses clustering. Pada penelitian ini digunakan lima fitur statistik utama yang diekstraksi dari data harga komoditas untuk merepresentasikan karakteristik pola harga antar provinsi.
+
+\textbf{1. Rata-rata (\textit{Mean})}
+
+Rata-rata digunakan untuk merepresentasikan tingkat harga umum suatu komoditas pada suatu provinsi. Secara matematis, rata-rata harga didefinisikan sebagai:
+% \begin{equation}   
+% \[
+% \bar{X}_{ij} = \frac{1}{T} \sum_{t=1}^{T} X_{ijt}
+% \]
+% \end{equation}
+
+\begin{equation}
+\bar{X}_{ij} = \frac{1}{T} \sum_{t=1}^{T} X_{ijt} \tag{1}
+\end{equation}
+
+di mana \(X_{ijt}\) menyatakan harga komoditas ke-\(j\) di provinsi ke-\(i\) pada waktu ke-\(t\), dan \(T\) adalah jumlah total observasi waktu. Nilai rata-rata ini mencerminkan level harga umum yang berhubungan dengan biaya akses pangan di setiap wilayah.
+
+\textbf{2. Coefficient of Variation (CV)}
+
+\textit{Coefficient of Variation} (CV) merupakan ukuran statistik yang menggambarkan tingkat volatilitas relatif suatu data terhadap nilai rata-ratanya. Berbeda dengan simpangan baku absolut, CV bersifat bebas skala sehingga memungkinkan perbandingan tingkat volatilitas antar komoditas yang memiliki level harga berbeda. Secara matematis, CV didefinisikan sebagai:
+
+\begin{equation}
+CV_{ij} = \frac{\sigma_{ij}}{\bar{X}_{ij}} \times 100\% \tag{2}
+\end{equation}
+dengan \(\sigma_{ij}\) menyatakan simpangan baku harga komoditas ke-\(j\) di provinsi ke-\(i\), yang dihitung sebagai:
+\begin{equation}
+\sigma_{ij} = \sqrt{\frac{1}{T-1} \sum_{t=1}^{T} \left( X_{ijt} - \bar{X}_{ij} \right)^2} \tag{3}
+\end{equation}
+di mana \(X_{ijt}\) merupakan harga komoditas ke-\(j\) di provinsi ke-\(i\) pada waktu ke-\(t\), dan \(T\) adalah jumlah total observasi waktu. Nilai CV yang lebih tinggi menunjukkan tingkat fluktuasi harga yang lebih besar relatif terhadap rata-ratanya, sehingga mencerminkan tingkat ketidakstabilan harga yang berpotensi berdampak pada risiko ketahanan pangan di suatu wilayah.Nilai CV yang lebih tinggi menunjukkan tingkat volatilitas harga yang lebih besar relatif terhadap nilai rata-ratanya, sementara nilai CV yang rendah mencerminkan harga yang lebih stabil.
+
+
+\textbf{3.Autocorrelation(lag - 1)}
+
+Autocorrelation adalah ukuran seberapa kuat suatu variabel berkolerasi dengan dirinya sendiri di waktu atau jarak yang berbeda,autocorrelation mengukur hubungan nilai deret waktu sekarang dengan nilai deret waktu yang sama pada beberapa langkah sebelumnya sebelumnya(lag),secara matematis autocorrelation didefinisikan sebagai berikut:
+
+\begin{equation}
+\rho_{ij}(1) = \frac{\sum_{t=2}^{T} (X_{ijt} - \bar{X}_{ij})(X_{ij(t-1)} - \bar{X}_{ij})}{\sum_{t=1}^{T} (X_{ijt} - \bar{X}_{ij})^2} \tag{4}
+\end{equation}
+formula diatas pada dasarnya merupakan bentuk khusus koefisien korelasi pearson antara $X_{ijt}$ pada waktu \textit{t} dan nilai waktu sebelumnya $X_{ij(t-1)}$(lag - 1) setelah dikoreksi dengan nilai rata-ratanya $X_{ij}$ lalu dibagi dengan deviasi dari rata-rata waktu \textit{t},nilai \textit{Autocorrelation} berada pada rentang \([-1, 1]\), di mana nilai yang mendekati 1 menunjukkan persistensi harga yang kuat, sedangkan nilai mendekati 0 menunjukkan pola harga yang lebih acak dan sulit diprediksi
+.\textit{Autocorrelation} ini menggambarkan tingkat persistensi temporal harga, yaitu sejauh mana pergerakan harga pada periode sebelumnya memengaruhi harga pada periode saat ini.
+
+\textbf{4.Trend}
+
+Trend adalah metode untuk mengidentifikasi kecenderungan  atau arah  perkembangan data dalam jangka waktu panjang,secara matermatis \textit{Trend} didefinisikan sebagai berikut:
+\begin{equation}
+X_{ijt} = \alpha_{ij} + \beta_{ij} \cdot t + \epsilon_{ijt} \tag{5}
+\end{equation}
+dimana $X_{ijt}$ adalah posisi pada unit $i$,komoditas $j$ dan waktu $t$ $\alpha_{ij}$ adalah intercept atau nilai saat $t = 0$ dan $\epsilon_{ijt}$ adalah error yang menangkap variasi acak,dan $\beta_{ij}$ adalah:
+
+\begin{equation}
+\beta_{ij} = \frac{T\sum_{t=1}^{T} t \cdot X_{ijt} - \sum_{t=1}^{T} t \sum_{t=1}^{T} X_{ijt}}{T\sum_{t=1}^{T} t^2 - \left(\sum_{t=1}^{T} t\right)^2} \tag{6}
+\end{equation}
+Merepresentasikan komponen kecenderungan jangka panjang dalam deret waktu harga (naik, turun, atau stabil).
+
+\textbf{5.Skewness}
+
+\textit{Skewness} adalah ukuran yang menyatakan seberapa tidak simetris(miring) terhadap suatu data,\textit{Skewness} didefinisikan sebagai berikut:
+
+\begin{equation}
+Skew_{ij} = \frac{T}{(T-1)(T-2)} \sum_{t=1}^{T} \left(\frac{X_{ijt} - \bar{X}_{ij}}{\sigma_{ij}}\right)^3 \tag{7}
+\end{equation}
+Nilai \textit{Skewness} bernilai nol pada distribusi yang simetris, bernilai positif pada distribusi yang condong ke kanan (right-skewed), dan bernilai negatif pada distribusi yang condong ke kiri (left-skewed).\textit{Skewness} yang tinggi mengindikasikan potensi kejadian harga ekstrem,khususnya lonjakan harga yang jarang terjadi namun signifikan.
+
+Berdasarkan proses \textit{feature extraction} yang dilakukan, setiap komoditas pada masing-masing provinsi direpresentasikan oleh lima fitur statistik utama, yaitu rata-rata harga (mean), coefficient of variation (CV), autokorelasi lag-1, tren jangka panjang, dan skewness distribusi harga. Kelima fitur tersebut secara bersama-sama merepresentasikan level harga umum, tingkat volatilitas relatif, persistensi temporal, kecenderungan perubahan jangka panjang, serta potensi kejadian harga ekstrem. Kombinasi fitur ini dirancang untuk menangkap karakteristik dinamika harga yang relevan dalam mengidentifikasi perbedaan tingkat risiko kerawanan pangan antar wilayah. Selanjutnya, matriks fitur yang dihasilkan digunakan sebagai masukan dalam proses clustering.
+
+Setelah seluruh fitur statistik diekstraksi, matriks fitur yang dihasilkan dinormalisasi menggunakan metode Z-score. Normalisasi ini diterapkan untuk menyamakan skala antar fitur yang memiliki rentang nilai dan sebaran yang berbeda. Proses normalisasi dilakukan pada ruang fitur, bukan pada data deret waktu harga secara langsung, sehingga interpretasi statistik dari setiap fitur tetap terjaga. Normalisasi ini diperlukan sebelum proses clustering karena algoritma \textit{Fuzzy C-Means} berbasis jarak Euclidean yang sensitif terhadap perbedaan skala variabel.
+
+\subsection{Algoritma Fuzzy C-Means Clustering}
+
+Fuzzy C-Means (FCM) merupakan salah satu algoritma clustering yang mengadopsi konsep \textit{fuzzy logic}, yaitu pendekatan matematis yang memungkinkan nilai keanggotaan tidak bersifat biner (\textit{true} atau \textit{false}), melainkan berada pada rentang kontinu antara 0 dan 1. Dalam konteks fuzzy clustering, setiap titik data tidak dipaksa untuk menjadi anggota tunggal dari satu cluster, tetapi dapat memiliki derajat keanggotaan pada beberapa cluster secara bersamaan.
+
+Pendekatan ini sangat sesuai untuk data dengan karakteristik yang saling tumpang tindih, ukuran cluster yang tidak seragam, serta data yang mengandung noise dan outlier, sehingga memberikan fleksibilitas yang lebih tinggi dibandingkan metode hard clustering \cite{ref9}.
+
+Algoritma Fuzzy C-Means bekerja dengan meminimalkan fungsi objektif yang mengukur jarak antara data dan pusat cluster dengan mempertimbangkan derajat keanggotaan fuzzy. Fungsi objektif FCM dirumuskan sebagai berikut:
+
+\begin{equation}
+J_m = \sum_{i=1}^{N} \sum_{k=1}^{c} u_{ik}^m \left\lVert x_i - c_j \right\rVert^2 \tag{8}
+\end{equation}
+
+di mana \(x_i\) merupakan vektor fitur dari data ke-\(i\), \(v_k\) adalah pusat cluster ke-\(k\), \(u_{ik}\) menyatakan derajat keanggotaan data ke-\(i\) terhadap cluster ke-\(k\), \(m > 1\) adalah parameter \textit{fuzziness} yang mengontrol tingkat ketidakjelasan partisi, \(N\) adalah jumlah total data, dan \(c\) adalah jumlah cluster. 
+
+Nilai derajat keanggotaan(\textit{membership}) sendiri diperbarui pada setiap iterasi berdasarkan jarak relatif data terhadap seluruh pusat cluster, dengan formula sebagai berikut:
+
+\begin{equation}
+u_{ij} = \frac{1}{\sum_{k=1}^C \left( \frac{\|x_i - c_j\|}{\|x_i - c_k\|} \right)^{\frac{2}{m-1}}} ] \tag{9}
+\end{equation}
+
+Pusat cluster kemudian diperbarui menggunakan rata-rata berbobot derajat keanggotaan:
+
+\begin{equation}
+c_j = \frac{\sum_{i=1}^N u_{ij}^m x_i}{\sum_{i=1}^N u_{ij}^m} \tag{10}
+\end{equation}
+
+Proses iterasi dilakukan secara berulang dengan memperbarui nilai keanggotaan dan pusat cluster hingga fungsi objektif $J_{m}$ mencapai kondisi konvergen atau jumlah iterasi maksimum terpenuhi.Pseudocode algoritma Fuzzy C-Means ditunjukkan pada Algoritma \ref{algo:1}.
+
+\begin{algorithm}[H]
+\caption{Fuzzy C-Means Clustering}
+\label{algo:1}
+\begin{algorithmic}[1]
+\State \textbf{Input:} Data $X=\{x_1,\dots,x_N\}$, jumlah cluster $c$, fuzziness $m>1$, toleransi $\varepsilon$, iterasi maksimum $maxIter$
+\State \textbf{Output:} Matriks keanggotaan $U$, pusat cluster $C$
+
+\State Inisialisasi matriks keanggotaan $U$ secara acak
+\State $iter \gets 0$
+
+\Repeat
+    \State $iter \gets iter + 1$
+    \State Perbarui pusat cluster $c_j$ menggunakan persamaan (10)
+    \State Simpan $U_{\text{old}} \gets U$
+    \State Perbarui matriks keanggotaan $U$ menggunakan persamaan (9)
+\Until{$\|U - U_{\text{old}}\| < \varepsilon$ \textbf{atau} $iter \ge maxIter$}
+
+\State \Return $U, C$
+\end{algorithmic}
+\end{algorithm}
+
+Fuzzy C-Means merupakan metode \textit{unsupervised learning}, sehingga evaluasi hasil clustering dilakukan menggunakan metrik validasi internal yang mengukur tingkat kekompakan dan keterpisahan cluster. Pada penelitian ini digunakan beberapa metrik validasi, antara lain Davies–Bouldin Index, Fuzzy Partition Coefficient (FPC), Partition Entropy (PE).
+
+Pemilihan algoritma Fuzzy C-Means pada penelitian ini didasarkan pada karakteristik data yang menunjukkan adanya tumpang tindih antar kelompok, keberadaan noise dan outlier, serta distribusi fitur yang tidak seragam. Studi sebelumnya menunjukkan bahwa Fuzzy C-Means (FCM) mampu mengelompokkan data dengan ukuran cluster yang tidak seimbang, mengandung noise, dan memiliki distribusi massa yang tidak uniform secara lebih efektif dibandingkan algoritma clustering lainnya \cite{ref9}. Karakteristik tersebut sejalan dengan data penelitian ini yang direpresentasikan dalam bentuk fitur statistik hasil ekstraksi dari deret waktu harga, sehingga pendekatan clustering berbasis fuzzy dinilai lebih sesuai untuk menangkap pola transisi dan ketidakpastian antar cluster.
+
+
+\subsection{Pemilihan Jumlah Cluster Optimal}
+
+Penentuan jumlah cluster optimal dapat dilakukan melalui dua pendekatan utama. Pendekatan pertama menggunakan indeks validasi tertentu yang secara langsung mengestimasi kualitas partisi, seperti Xie–Beni Index. Pendekatan kedua dilakukan dengan mengevaluasi performa hasil clustering pada berbagai jumlah cluster dengan menjalankan algoritma Fuzzy C-Means secara berulang pada rentang nilai tertentu.
+
+Pada penelitian ini digunakan pendekatan kedua, yaitu dengan menguji jumlah cluster \(c\) pada rentang 2 hingga 10. Untuk setiap nilai \(c\), algoritma Fuzzy C-Means dijalankan dan hasil clustering dievaluasi menggunakan metrik validasi internal. Jumlah cluster optimal kemudian ditentukan berdasarkan nilai metrik evaluasi yang menunjukkan performa terbaik.Pendekatan ini dipilih karena memberikan fleksibilitas dalam mengamati stabilitas dan kualitas struktur cluster pada berbagai skenario jumlah cluster.
+
+Tabel~\ref{tab:fcm-summary} menyajikan ringkasan hasil evaluasi Fuzzy C-Means untuk beberapa variasi jumlah cluster. Nilai lengkap untuk seluruh rentang jumlah cluster \(c = 2\) hingga \(c = 10\) digunakan dalam proses evaluasi, namun hanya sebagian nilai ditampilkan pada tabel untuk kejelasan penyajian.
+
+\begin{table}[h]
+\centering
+\caption{Ringkasan hasil FCM untuk berbagai nilai $c$}
+\label{tab:fcm-summary}
+\begin{tabular}{cccc l}
+\hline
+$c$ & DBI & Partition Coef. & Partition Entropy & Cluster sizes \\
+\hline
+2 & 1.6812 & 0.5615 & 0.6289 & [12, 22] \\
+3 & 2.1182 & 0.3741 & 1.0298 & [9, 17, 8] \\
+4 & 2.0632 & 0.2806 & 1.3162 & [7, 0, 10, 17] \\
+\multicolumn{5}{c}{\dots} \\
+\hline
+\end{tabular}
+\end{table}
+
+Berdasarkan hasil evaluasi pada Tabel~\ref{tab:fcm-summary}, konfigurasi dengan jumlah cluster \(c = 2\) memberikan performa terbaik dibandingkan konfigurasi lainnya. Hal ini ditunjukkan oleh nilai Davies--Bouldin Index (DBI) yang paling rendah sebesar 1.6812, nilai Partition Coefficient (PC) tertinggi sebesar 0.5615, serta nilai Partition Entropy (PE) terendah sebesar 0.6289. 
+
+Tren perubahan nilai metrik evaluasi terhadap variasi jumlah cluster ditunjukkan pada Gambar~\ref{fig:line_plot}. Terlihat bahwa peningkatan jumlah cluster tidak diikuti oleh perbaikan kualitas clustering secara konsisten, yang ditandai dengan meningkatnya nilai DBI dan menurunnya nilai Partition Coefficient. Oleh karena itu, jumlah cluster \(c = 2\) dipilih sebagai konfigurasi optimal dan digunakan pada tahap analisis selanjutnya.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{dbi_pc.png}
+    \caption{Perubahan nilai Davies--Bouldin Index dan Partition Coefficient terhadap variasi jumlah cluster}
+    \label{fig:line_plot}
+\end{figure}
+
+\subsection{Interpretasi Cluster}
+Setelah proses clustering menghasilkan jumlah cluster optimal, tahap interpretasi dilakukan untuk menganalisis karakteristik masing-masing cluster secara kuantitatif. Tahap ini bertujuan untuk menyediakan kerangka analisis yang sistematis dalam memahami perbedaan pola antar cluster, tanpa memberikan penilaian substantif terhadap makna cluster tersebut.
+
+Untuk setiap cluster yang terbentuk, dihitung statistik deskriptif berupa nilai rata-rata dan standar deviasi dari setiap fitur yang digunakan dalam proses clustering. Statistik ini digunakan untuk membandingkan karakteristik relatif antar cluster dan mengidentifikasi fitur-fitur yang berkontribusi terhadap perbedaan pola antar kelompok.
+
+Selain itu, algoritma Fuzzy C-Means menghasilkan derajat keanggotaan (\textit{membership degree}) \(u_{ik}\) yang merepresentasikan tingkat asosiasi suatu provinsi terhadap masing-masing cluster. Informasi derajat keanggotaan ini digunakan untuk mengidentifikasi tingkat kejelasan partisi cluster, termasuk objek dengan keanggotaan dominan serta objek yang berada pada wilayah transisi antar cluster. Interpretasi substantif terhadap hasil tersebut dibahas lebih lanjut pada bab hasil dan pembahasan.
+
+
+\section{Hasil dan Pembahasan}
+\newpage
 % Hasil dan pembahasan menjelaskan hasil penelitian yang disertai dengan pembahasan atau diskusi yang bersifat komprehensif. Hasil penelitian dapat disajikan dalam bentuk tabel, gambar atau grafik atau bentuk visualisasi yang dapat dipahami pembaca dengan lebih baik.
 
 % \subsection{Hasil Analisis Deskriptif}
@@ -328,6 +550,12 @@ Exploration of variance, autocorrelation, and skewness of deviations from lactat
 https://doi.org/10.3168/jds.2019-17290
 
 \bibitem{ref8} Datavidia, ``Indonesia Commodity Price,'' Kaggle, 2025. [Online]. Tersedia: https://www.kaggle.com/datasets/datavidia/indonesia-commodity-price/data. [Diakses: Des. 2025].
+
+\bibitem{ref9}
+S.~Askari,
+``Fuzzy C-Means clustering algorithm for data with unequal cluster sizes and contaminated with noise and outliers: Review and development,''
+\textit{Expert Systems with Applications},
+vol.~165, p.~113856, 2021.
 
 \end{thebibliography}
 
