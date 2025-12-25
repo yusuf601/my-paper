@@ -2,7 +2,7 @@
 
 > A data-driven approach to identify provincial vulnerability to food price instability using fuzzy clustering on time series commodity price data
 
-[![Build LaTeX](https://github.com/yusuf601/my-paper/actions/workflows/latex_ci.yml/badge.svg)](https://github.com/yusuf601/my-paper/actions)
+[![Build LaTeX PDF](https://github.com/yusuf601/my-paper/actions/workflows/latex_ci.yaml/badge.svg)](https://github.com/yusuf601/my-paper/actions/workflows/latex_ci.yaml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## Overview
@@ -123,4 +123,3 @@ Add acknowledgments here (funding sources, advisors, contributors, etc.).
 ---
 
 **Last updated:** December 2025
-```
