@@ -2,7 +2,9 @@ name: Build LaTeX PDF
 
 on:
   push:
-    branches: [ main ]
+    branches:  
+      - main
+      - feat/raw_paper 
   pull_request:
 
 jobs:
