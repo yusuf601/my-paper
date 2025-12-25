@@ -19,6 +19,7 @@
 \usepackage{amssymb}
 \usepackage{algpseudocode}
 \usepackage{algorithm}
+\usepackage{longtable}
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 % Format section
 \titleformat{\section}
@@ -40,23 +41,23 @@
 \begin{document}
 
 % Header informasi jurnal
-\noindent
-\begin{minipage}{0.5\textwidth}
-\small p-ISSN : 2443-2210\\
-e-ISSN : 2443-2229
-\end{minipage}
-\begin{minipage}{0.5\textwidth}
-\raggedleft
-\small Jurnal Teknik Informatika dan Sistem Informasi\\
-Volume x Nomor x Bulan 20xx
-\end{minipage}
+% \noindent
+% \begin{minipage}{0.5\textwidth}
+% \small p-ISSN : 2443-2210\\
+% e-ISSN : 2443-2229
+% \end{minipage}
+% \begin{minipage}{0.5\textwidth}
+% \raggedleft
+% \small Jurnal Teknik Informatika dan Sistem Informasi\\
+% Volume x Nomor x Bulan 20xx
+% \end{minipage}
 
 \vspace{0.3cm}
 \noindent\rule{\textwidth}{0.4pt}
 
 % Judul
 \begin{center}
-{\fontsize{24}{28}\selectfont\bfseries Segmentation of Provinces Prone to Food Crises Based on Commodity Price Volatility Patterns Using Fuzzy C-Means Clustering\par}
+{\fontsize{24}{28}\selectfont\bfseries Segmentasi Provinsi Rawan Krisis Pangan Berdasarkan Pola Volatilitas Harga Komoditas Menggunakan Fuzzy C-Means Clustering\par}
 \vspace{0.3cm}
 \end{center}
 
@@ -96,7 +97,7 @@ Corresponding author: muhyusuf@uho.ac.id
 
 % Abstract in English
 \noindent
-\textbf{\textit{Segmentasi Provinsi Rawan Krisis pangan Berdasarkan Pola Harga Komoditas Pangan Menggunakan Algoritma Fuzzy C-Means Clustering}}
+\textbf{\textit{Segmentation of Provinces Prone to Food Crises Based on Commodity Price Volatility Patterns Using Fuzzy C-Means Clustering}}
 
 \vspace{0.1cm}
 \noindent
@@ -444,14 +445,212 @@ Tren perubahan nilai metrik evaluasi terhadap variasi jumlah cluster ditunjukkan
 \end{figure}
 
 \subsection{Interpretasi Cluster}
-Setelah proses clustering menghasilkan jumlah cluster optimal, tahap interpretasi dilakukan untuk menganalisis karakteristik masing-masing cluster secara kuantitatif. Tahap ini bertujuan untuk menyediakan kerangka analisis yang sistematis dalam memahami perbedaan pola antar cluster, tanpa memberikan penilaian substantif terhadap makna cluster tersebut.
 
-Untuk setiap cluster yang terbentuk, dihitung statistik deskriptif berupa nilai rata-rata dan standar deviasi dari setiap fitur yang digunakan dalam proses clustering. Statistik ini digunakan untuk membandingkan karakteristik relatif antar cluster dan mengidentifikasi fitur-fitur yang berkontribusi terhadap perbedaan pola antar kelompok.
+Setelah diperoleh jumlah cluster optimal, interpretasi dilakukan menggunakan pendekatan \textit{Per-Cluster Aggregated Statistics} (PCAS). Setiap provinsi diasosiasikan ke cluster dengan derajat keanggotaan tertinggi (\textit{hard assignment}), kemudian nilai agregat fitur untuk setiap cluster dihitung sebagai berikut:
 
-Selain itu, algoritma Fuzzy C-Means menghasilkan derajat keanggotaan (\textit{membership degree}) \(u_{ik}\) yang merepresentasikan tingkat asosiasi suatu provinsi terhadap masing-masing cluster. Informasi derajat keanggotaan ini digunakan untuk mengidentifikasi tingkat kejelasan partisi cluster, termasuk objek dengan keanggotaan dominan serta objek yang berada pada wilayah transisi antar cluster. Interpretasi substantif terhadap hasil tersebut dibahas lebih lanjut pada bab hasil dan pembahasan.
+\begin{equation}
+\overline{X}_{c} = \frac{1}{N_c} 
+\sum_{i \in C_c} 
+\left( \frac{1}{K} \sum_{k=1}^{K} X_{i,k} \right)
+\tag{11}
+\label{eq:pcas}
+\end{equation}
 
+Selanjutnya, untuk setiap cluster dihitung statistik deskriptif berupa nilai rata-rata dan standar deviasi (\(mean \pm std\)) dari masing-masing fitur guna membandingkan karakteristik relatif antar cluster.
+
+\subsection{Klasifikasi Risiko Kerawanan Pangan}
+
+Tahap selanjutnya adalah melakukan klasifikasi tingkat kerawanan pangan pada setiap provinsi berdasarkan karakteristik cluster yang diperoleh. Klasifikasi risiko ini tidak merupakan keluaran langsung dari algoritma Fuzzy C-Means, melainkan diturunkan melalui formulasi skor risiko berbasis fitur utama hasil clustering.
+
+Indikator utama yang digunakan dalam penentuan risiko adalah \textit{Coefficient of Variation} (CV) sebagai representasi volatilitas harga. Sementara itu, fitur \textit{trend} dan \textit{skewness} digunakan sebagai faktor koreksi untuk menangkap dinamika arah perubahan harga dan potensi kejadian ekstrem. Skor risiko untuk setiap cluster didefinisikan sebagai berikut:
+
+\begin{equation}
+\text{RiskScore}_c = \overline{CV}_c + \alpha \,\overline{\text{Trend}}_c + \beta \,\overline{\text{Skew}}_c
+\tag{12}
+\label{eq:risk-score}
+\end{equation}
+
+dengan \(\overline{CV}_c\), \(\overline{\text{Trend}}_c\), dan \(\overline{\text{Skew}}_c\) masing-masing menyatakan nilai rata-rata fitur pada cluster ke-\(c\), serta parameter pembobot \(\alpha = 100\) dan \(\beta = 0.1\) yang digunakan untuk menyesuaikan skala kontribusi masing-masing fitur.
 
 \section{Hasil dan Pembahasan}
+
+\subsection{Hasil Clustering Fuzzy C-Means}
+Berdasarkan hasil konfigurasi optimal,proses clustering menggunakan parameter $c = 2$ dan $m = 2$ mencapai kondisi konvergen setelah $19$ kali iterasi.Nilai fungsi objektif akhir dengan sebesar $842.021318$ dengan nilai Partition Coefficient $0.5608$
+,ringkasan hasil clustering lebih lengkap pada tabel \ref{tab:hasil_fcm}.
+
+\begin{table}[h!]
+\centering
+\caption{Ringkasan Hasil Fuzzy C-Means Clustering ($c=2,m = 2$)}
+\label{tab:hasil_fcm}
+\begin{tabular}{lc}
+\hline
+\textbf{Metrik} & \textbf{Nilai} \\
+\hline
+Iterasi Konvergensi & 19 \\
+Objective Function ($J_m$) & 842.0213 \\
+Partition Coefficient (FPC) & 0.5608 \\
+Perubahan $J_m$ ($\Delta$) & -199.3514 \\
+Ukuran Cluster & [12, 22] \\
+Maximum Membership & 0.8281 \\
+\hline
+\end{tabular}
+\end{table}
+
+Nilai Partition Coefficient sebesar $0.5608$ menunjukkan adanya tingkat overlap antar cluster yang bersifat moderat, yang mengindikasikan bahwa sebagian provinsi memiliki karakteristik yang tidak sepenuhnya terpisah secara tegas..Dengan konfigurasi jumlah cluster yang telah ditetapkan, distribusi provinsi berdasarkan hasil clustering Fuzzy C-Means disajikan pada Tabel~\ref{tab:cluster_members}.
+\begin{table}[htbp]
+    \centering
+    \caption{Komposisi Provinsi Berdasarkan Hasil Clustering Fuzzy C-Means ($c=2$)}
+    \label{tab:cluster_members}
+    \footnotesize
+    \begin{tabular}{p{5cm}p{5cm}}
+        \toprule
+        \textbf{Cluster 0 (12 provinsi)} & \textbf{Cluster 1 (22 provinsi)} \\ 
+        \midrule
+        Kalimantan Barat & Aceh \\
+        Kalimantan Selatan & Bali \\
+        Kalimantan Tengah & Banten \\
+        Kalimantan Timur & Bengkulu \\
+        Kalimantan Utara & DI Yogyakarta \\
+        Kepulauan Riau & DKI Jakarta \\
+        Maluku & Gorontalo \\
+        Maluku Utara & Jambi \\
+        Nusa Tenggara Timur & Jawa Barat \\
+        Papua & Jawa Tengah \\
+        Papua Barat & Jawa Timur \\
+        Sulawesi Tenggara & Kepulauan Bangka Belitung \\
+         & Lampung \\
+         & Nusa Tenggara Barat \\
+         & Riau \\
+         & Sulawesi Barat \\
+         & Sulawesi Selatan \\
+         & Sulawesi Tengah \\
+         & Sulawesi Utara \\
+         & Sumatera Barat \\
+         & Sumatera Selatan \\
+         & Sumatera Utara \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Hasil clustering yang diperoleh selanjutnya dianalisis untuk mengidentifikasi karakteristik dan perbedaan pola antar \textit{cluster}.
+
+% hasil umum clustering, peta, ringkasan
+
+\subsection{Karakteristik dan Interpretasi Cluster}
+
+Metode yang digunakan untuk mengetahui karateristik tiap \textit{cluster} dengan menggunakan metode \textit{Per-Cluster Aggregated Statistics (PCAS)} dengan hard assignment dari membership matrix $U$,kemudian statistik deskriptif
+(mean $\pm$ std) dihitung per feature type dengan agregasi lintas
+komoditas.tabel hasil karateristik cluster disajikan di tabel \ref{tab:cluster-profiles}.
+komoditas:
+
+\begin{table}[h!]
+\centering
+\caption{Karakteristik Feature Types Fuzzy C-Means ($c=2$)}
+\label{tab:cluster-profiles}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Feature} & \textbf{Cluster 0} & \textbf{Cluster 1} & \textbf{Diff (\%)} & \textbf{Keterangan} \\
+\hline
+Mean     & 41,319 ± 4,815 & 35,823 ± 2,892 & +15.3\% & Nilai rata-rata C0 lebih besar \\
+CV       & 0.098 ± 0.023  & 0.131 ± 0.020 & -25.3\% & Variabilitas C1 lebih tinggi \\
+Trend    & 0.0002 ± 0.0001& 0.0002 ± 0.0001& -11.3\% & Perbedaan relatif kecil \\
+Autocorr & 0.945 ± 0.049  & 0.982 ± 0.014 & -3.8\%  & Pola temporal serupa \\
+Skewness & 0.158 ± 0.387  & 0.180 ± 0.318 & -12.5\% & Distribusi relatif mirip \\
+\hline
+\end{tabular}
+\end{table}
+
+Berdasarkan Tabel~\ref{tab:cluster-profiles}, cluster 0 memiliki nilai rata-rata harga (\textit{mean}) yang lebih tinggi dibandingkan cluster 1, dengan selisih sekitar 15.3\%. Sebaliknya, nilai \textit{Coefficient of Variation} (CV) pada cluster 1 lebih tinggi sekitar 25.3\%, yang menunjukkan bahwa cluster dengan harga relatif lebih rendah cenderung memiliki volatilitas yang lebih tinggi.
+
+Untuk fitur \textit{trend}, \textit{autocorrelation}, dan \textit{skewness}, perbedaan antar cluster relatif kecil, masing-masing sekitar 11.3\%, 3.8\%, dan 12.5\%. Hal ini mengindikasikan bahwa perbedaan utama antar cluster lebih didominasi oleh tingkat harga dan volatilitas, sementara karakteristik dinamika temporal relatif serupa.
+
+Perbedaan karakteristik ini selanjutnya digunakan sebagai dasar untuk mengkaji tingkat kejelasan partisi cluster dan pola keanggotaan fuzzy pada masing-masing provinsi.
+
+% % profil cluster + interpretasi cluster 1 & 2 (digabung)
+
+\subsection{Analisis Derajat Keanggotaan Fuzzy}
+
+Selanjutnya, analisis distribusi derajat keanggotaan (\textit{membership}) dilakukan untuk mengevaluasi seberapa kuat asosiasi setiap provinsi terhadap cluster tertentu. Tabel~\ref{tab:fuzzy-membership-summary} menyajikan ringkasan distribusi derajat keanggotaan fuzzy untuk masing-masing cluster.
+
+\begin{table}[h!]
+\centering
+\caption{Distribusi Derajat Keanggotaan Fuzzy per Cluster}
+\label{tab:fuzzy-membership-summary}
+\begin{tabular}{lccc}
+\hline
+\textbf{Kategori Membership} & \textbf{Rentang $u_{ik}$} & \textbf{Cluster 0} & \textbf{Cluster 1} \\
+\hline
+Dominan        & $u_{ik} \ge 0.8$     & 0 & 2 \\
+Menengah       & $0.6 \le u_{ik} < 0.8$ & 6 & 14 \\
+Ambigu         & $0.4 \le u_{ik} < 0.6$ & 6 & 6 \\
+\hline
+\end{tabular}
+\end{table}
+
+Hasil analisis menunjukkan bahwa hanya terdapat dua provinsi yang memiliki derajat keanggotaan dominan terhadap cluster tertentu. Sebaliknya, kategori keanggotaan menengah mendominasi hasil clustering dengan total 20 provinsi pada kedua cluster. Selain itu, masih terdapat 12 provinsi yang berada pada kategori keanggotaan ambigu, yang mengindikasikan adanya overlap karakteristik antar cluster.
+
+lebih lanjut pada histogram pada gambar \ref{fig:membership_distribution},menunjukkan distribusi derajat keanggotaan fuzzy untuk masing-masing cluster. Terlihat bahwa distribusi keanggotaan pada cluster 0 cenderung berada pada rentang menengah, dengan nilai rata-rata sekitar 0.43, yang mengindikasikan adanya sejumlah provinsi dengan keanggotaan ambigu. Sebaliknya, cluster 1 menunjukkan nilai keanggotaan yang relatif lebih tinggi dengan rata-rata sekitar 0.57, yang mencerminkan partisi yang lebih jelas dibandingkan cluster 0.
+Sementara itu nilai mean \textit{Adjusted Rand Index} (ARI) bernilai 0.6647 dengan 50 boostrap umum mengindikasikan bahwa solusi dua cluster bersifat cukup stabil dan dapat dilakukan analisis lanjutan.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{membership_distribution.png}
+    \caption{Distribusi Derajat }
+    \label{fig:membership_distribution}
+\end{figure}
+
+\subsection{Klasifikasi Risiko}
+Setelah menganalisis derajat keanggotaan dan karakteristik masing-masing cluster, 
+tahap selanjutnya adalah melakukan klasifikasi risiko kerawanan pangan untuk 
+menentukan tingkat kerentanan setiap cluster terhadap ketidakstabilan pasokan 
+pangan. Klasifikasi ini dilakukan berdasarkan perhitungan risk score menggunakan 
+Persamaan \ref{eq:risk-score} yang mengintegrasikan tiga indikator utama: volatilitas harga (CV), pola perubahan harga jangka panjang (trend), dan potensi kejadian harga ekstrem 
+(skewness).
+
+Tabel \ref{tab:risk-cluster} menyajikan hasil klasifikasi risiko berdasarkan 
+nilai rata-rata Coefficient of Variation (CV) sebagai indikator utama volatilitas 
+harga pada masing-masing cluster. Cluster 0 menunjukkan nilai CV sebesar $0.0981$, 
+yang mengindikasikan tingkat fluktuasi harga relatif lebih rendah dibandingkan 
+Cluster 1 dengan nilai CV sebesar $0.1314$. Perbedaan CV sebesar 0.0333 atau sekitar 
+$33.9\%$ menunjukkan bahwa provinsi-provinsi di Cluster 1 mengalami volatilitas 
+harga yang signifikan lebih tinggi, sehingga lebih rentan terhadap gangguan 
+stabilitas pasokan pangan. Berdasarkan hasil ini, Cluster 0 diklasifikasikan 
+sebagai kelompok dengan \textit{risiko rendah}, sedangkan Cluster 1 diklasifikasikan 
+sebagai kelompok dengan \textit{risiko tinggi} terhadap krisis pangan.
+
+\begin{table}[h!]
+\centering
+\caption{Klasifikasi Risiko Berdasarkan Karakteristik Cluster}
+\label{tab:risk-cluster}
+\begin{tabular}{ccc}
+\hline
+\textbf{Cluster} & \textbf{CV Rata-rata} & \textbf{Tingkat Risiko} \\
+\hline
+Cluster 0 & 0.0981 & Risiko Rendah \\
+Cluster 1 & 0.1314 & Risiko Tinggi \\
+\hline
+\end{tabular}
+\end{table}
+
+Sementara itu, pada Gambar \ref{fig:peta} ditunjukkan sebaran distribusi provinsi berdasarkan cluster risiko pangan. Mayoritas provinsi di Pulau Jawa mendominasi cluster dengan risiko krisis pangan tinggi yang disebabkan oleh volatilitas harga yang tinggi. Volatilitas ini mengakibatkan ketidakstabilan harga yang merepresentasikan ketidaktersediaan pasokan barang secara konsisten. Di sisi lain, provinsi-provinsi di Pulau Kalimantan, sebagian kecil Pulau Sulawesi, dan provinsi-provinsi di kawasan timur Indonesia memiliki risiko pangan yang lebih rendah.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{peta_cluster.png}
+    \caption{Peta distribusi geografis cluster risiko pangan}
+    \label{fig:peta}
+\end{figure}
+
+% \subsection{Pola Geografis dan Faktor Penentu}
+% % choropleth + pola wilayah
+
+% \subsection{Validasi dengan Indikator Eksternal}
+% % pembandingan eksternal
+
+\subsection{Pembahasan}
+% \subsubsection{Temuan Utama}
+% \subsubsection{Komparasi dengan Penelitian Terdahulu}
+% \subsubsection{Kelebihan dan Keterbatasan Penelitian}
+
 \newpage
 % Hasil dan pembahasan menjelaskan hasil penelitian yang disertai dengan pembahasan atau diskusi yang bersifat komprehensif. Hasil penelitian dapat disajikan dalam bentuk tabel, gambar atau grafik atau bentuk visualisasi yang dapat dipahami pembaca dengan lebih baik.
 
