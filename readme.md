@@ -25,3 +25,5 @@ Follow the steps below to download the paper from the GitHub repository:
 6. The **PDF paper** will be downloaded to your computer.
 
 > **Note:** Make sure the selected workflow run has a **successful (✓)** status to ensure the PDF file is available and complete.
+
+> **Branch:** feat/raw_paper contains content raw,which is unfinished manuscript,,but you can view this raw manuscript 
