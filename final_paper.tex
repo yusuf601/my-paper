@@ -28,6 +28,18 @@
   {\normalfont\fontsize{10}{12}\bfseries\itshape}{\thesubsection}{0.5em}{}
 \titleformat{\subsubsection}[runin]
   {\normalfont\fontsize{10}{12}\itshape}{\arabic{subsubsection})}{0.5em}{}[:]
+\titleformat{\subsubsection}[runin]  % [runin] = teks lanjut di baris yang sama
+  {\normalfont\normalsize\itshape}    % italic (bukan bold)
+  {\thesubsubsection}                 % numbering
+  {1em}                               % spasi antara nomor dan judul
+  {}                                  % before-code
+  [:]                                 % after-code (tambahkan titik dua)
+
+% Spasi dan indentasi
+\titlespacing*{\subsubsection}
+  {\parindent}     % indentasi kiri (menjorok seperti paragraf)
+  {3.25ex plus 1ex minus .2ex}  % spasi sebelum
+  {1em}            % spasi horizontal setelah titik dua sebelum teks
 
 % Spacing
 \setlength{\parindent}{0.5cm}
@@ -647,10 +659,42 @@ Sementara itu, pada Gambar \ref{fig:peta} ditunjukkan sebaran distribusi provins
 % % pembandingan eksternal
 
 \subsection{Pembahasan}
-% \subsubsection{Temuan Utama}
-% \subsubsection{Komparasi dengan Penelitian Terdahulu}
-% \subsubsection{Kelebihan dan Keterbatasan Penelitian}
+\subsubsection{Interpretasi Pola Geografis Cluster}
+Hasil clustering menunjukkan adanya pola geografis yang jelas dalam distribusi risiko volatilitas harga pangan antarprovinsi. Sebanyak 22 dari 34 provinsi (65\%) tergolong dalam Cluster 1 dengan tingkat volatilitas harga relatif tinggi (CV = 0.1314), sementara 12 provinsi (35\%) berada pada Cluster 0 dengan volatilitas lebih rendah (CV = 0.0981). Secara spasial, seluruh provinsi di Pulau Jawa secara konsisten tergolong dalam Cluster 1, sedangkan seluruh provinsi di Kalimantan berada pada Cluster 0. Pola ini mengindikasikan adanya faktor geografis dan struktural yang sistematis dalam membentuk dinamika volatilitas harga pangan antarwilayah.
 
+Dominasi Pulau Jawa dalam Cluster 1 sejalan dengan temuan empiris sebelumnya yang mengidentifikasi Jawa sebagai pusat transmisi volatilitas harga pangan nasional \cite{ref2}. Penelitian tersebut menunjukkan adanya keterkaitan volatilitas yang kuat dari Jawa ke wilayah lain, termasuk Sumatra, Kalimantan, dan Papua. Dalam konteks ini, volatilitas harga yang lebih tinggi di Jawa tidak hanya merefleksikan ketidakstabilan lokal, tetapi juga peran Jawa sebagai pusat pembentukan harga dalam sistem pangan nasional.
+
+Perbedaan karakteristik antara Jawa dan Kalimantan dapat dipahami melalui tingkat integrasi pasar yang berbeda. Studi Bank Dunia \cite{ref11} menunjukkan bahwa pasar pangan di Jawa memiliki tingkat integrasi spasial yang jauh lebih tinggi dibandingkan wilayah di luar Jawa. Integrasi pasar yang kuat memungkinkan transmisi harga yang cepat antarwilayah, sehingga guncangan harga di satu lokasi dapat segera menyebar ke wilayah lain. Mekanisme ini berkontribusi terhadap volatilitas agregat yang lebih tinggi pada wilayah yang terintegrasi secara kuat.
+
+Sebaliknya, pasar pangan di Kalimantan dan wilayah timur Indonesia cenderung memiliki tingkat integrasi yang lebih lemah, sehingga transmisi harga antarwilayah berlangsung lebih lambat. Keterbatasan ini menyebabkan guncangan harga bersifat lebih terlokalisasi dan tidak segera menyebar, yang pada agregat wilayah tercermin sebagai volatilitas yang relatif lebih rendah. Namun, kondisi tersebut juga mengindikasikan adanya keterbatasan mekanisme penyeimbang harga lintas wilayah.
+
+Peran infrastruktur transportasi dalam membentuk pola volatilitas harga pangan bersifat kontekstual. Penelitian sebelumnya menunjukkan bahwa konektivitas jalan yang baik dapat menurunkan volatilitas harga melalui peningkatan efisiensi distribusi \cite{ref10}. Namun, dalam konteks wilayah dengan tingkat integrasi pasar yang sudah tinggi seperti Jawa, konektivitas yang kuat justru mempercepat penyebaran guncangan harga, sehingga berpotensi meningkatkan volatilitas agregat. Sebaliknya, keterbatasan infrastruktur di wilayah seperti Kalimantan dapat berfungsi sebagai penghambat transmisi volatilitas antarwilayah, meskipun dengan konsekuensi berupa tingkat harga rata-rata yang lebih tinggi.
+
+Temuan ini mengungkap adanya paradoks stabilitas pada wilayah dengan tingkat integrasi pasar rendah. Provinsi-provinsi dalam Cluster 0 menunjukkan volatilitas harga yang lebih stabil bukan karena sistem pangan yang lebih tangguh, melainkan akibat keterisolasian spasial yang membatasi transmisi guncangan eksternal. Di satu sisi, kondisi ini melindungi wilayah tersebut dari volatilitas nasional; di sisi lain, keterbatasan integrasi meningkatkan kerentanan terhadap guncangan pasokan lokal yang sulit segera diimbangi melalui mekanisme perdagangan antarwilayah.
+
+Dengan demikian, hasil clustering tidak hanya merefleksikan perbedaan tingkat volatilitas harga antarwilayah, tetapi juga mengungkap struktur spasial sistem pangan Indonesia yang bersifat terfragmentasi. Wilayah dengan integrasi pasar tinggi menghadapi risiko volatilitas sistemik, sementara wilayah dengan integrasi rendah cenderung mengalami stabilitas relatif dengan kerentanan terhadap guncangan lokal.
+
+\subsubsection{Komparasi dengan Penelitian Sebelumnya}
+Penelitian sebelumnya yang menerapkan \textit{Dynamic Time Warping} (DTW) untuk clustering harga beras antar provinsi di Indonesia \cite{ref4} mengelompokkan wilayah berdasarkan kemiripan pola temporal deret waktu harga. Pendekatan DTW menekankan kesamaan bentuk pergerakan harga dari waktu ke waktu, sehingga provinsi dengan pola fluktuasi serupa dapat berada dalam satu cluster meskipun memiliki tingkat volatilitas yang berbeda.
+
+Sebaliknya, penelitian ini mengadopsi pendekatan \textit{feature-based clustering} dengan mengekstraksi karakteristik statistik dan temporal harga sebagai dasar pengelompokan. Perbedaan pendekatan ini menghasilkan fokus analisis yang berbeda: DTW menjawab pertanyaan mengenai kesamaan pola harga, sementara clustering berbasis volatilitas dalam penelitian ini berfokus pada kesamaan tingkat risiko ketidakstabilan harga antarwilayah. Meskipun demikian, kedua pendekatan menunjukkan indikasi konsisten terhadap karakteristik unik beberapa wilayah, yang mengisyaratkan adanya dinamika harga yang khas baik dari sisi pola maupun volatilitas.
+
+Studi sebelumnya mengenai clustering ketahanan pangan di Indonesia \cite{ref5} umumnya menggunakan indikator struktural berbasis data BPS—seperti aspek ketersediaan, akses, dan pemanfaatan pangan—serta mengevaluasi baik pendekatan hard clustering (K-Means, K-Medoids) maupun soft clustering (Fuzzy C-Means). Meskipun pendekatan soft clustering turut dianalisis, hasil evaluasi menunjukkan bahwa metode K-Means menghasilkan struktur cluster paling optimal, sehingga wilayah diklasifikasikan secara tegas ke dalam kategori rawan dan tidak rawan pangan..
+
+Penelitian ini berbeda dari studi sebelumnya baik dari sisi data maupun metode yang digunakan. Data \textit{time series} harga komoditas dimanfaatkan untuk menangkap dinamika dan volatilitas harga pangan, sehingga analisis risiko ketidakstabilan pangan menjadi lebih relevan. Selain itu, metode Fuzzy C-Means digunakan untuk mengakomodasi ketidakpastian dalam pengelompokan wilayah, di mana suatu wilayah tidak harus sepenuhnya berada dalam satu klaster tertentu. Pendekatan ini sesuai dengan karakteristik volatilitas harga, karena perbedaan antara kondisi stabil dan tidak stabil bersifat bertahap, sehingga memungkinkan beberapa wilayah berada pada posisi peralihan antar kelompok risiko.
+
+Sementara itu hasil clustering dalam penelitian ini menunjukkan konsistensi konseptual dengan studi mengenai \textit{price spillover effect} di Indonesia \cite{ref2}, yang mengidentifikasi Pulau Jawa sebagai pusat transmisi volatilitas harga pangan ke wilayah lain. Pola spasial cluster yang dihasilkan memperlihatkan konsentrasi wilayah berisiko tinggi pada kawasan yang secara ekonomi dan logistik terintegrasi kuat dengan Jawa.
+
+Namun, penelitian ini melengkapi analisis spillover dengan menyediakan pemetaan heterogenitas risiko antarwilayah berdasarkan karakteristik volatilitas harga. Dengan demikian, analisis spillover menjelaskan mekanisme transmisi volatilitas, sementara pendekatan clustering berbasis fitur dalam penelitian ini mengidentifikasi variasi tingkat paparan dan respons wilayah terhadap guncangan harga tersebut.
+
+\subsubsection{Keterbatasan Penelitian}
+
+Penelitian ini memiliki beberapa keterbatasan yang perlu diperhatikan dalam interpretasi hasil. Pertama, analisis clustering dilakukan berdasarkan karakteristik statistik deret waktu harga komoditas tanpa mempertimbangkan faktor struktural seperti produksi, distribusi, dan kondisi sosial ekonomi, sehingga hasil pengelompokan lebih merefleksikan risiko ketidakstabilan harga daripada ketahanan pangan secara komprehensif. Kedua, pendekatan clustering bersifat statis terhadap periode pengamatan, sehingga dinamika perubahan klaster antarwaktu belum dianalisis secara eksplisit. Selain itu, analisis spillover difokuskan pada hubungan antarwilayah utama, sehingga potensi pengaruh dari faktor eksternal seperti kebijakan pemerintah atau gangguan global belum sepenuhnya tercakup.
+
+\section{kesimpulan}
+Penelitian ini mengkaji pengelompokan risiko ketidakstabilan pangan di Indonesia dengan memanfaatkan deret waktu harga komoditas sebagai dasar analisis, sehingga mampu menangkap dinamika dan volatilitas harga antarwilayah. Melalui pendekatan feature-based clustering yang mengekstraksi karakteristik statistik utama  data \textit{time series}, penelitian ini memberikan perspektif alternatif terhadap studi ketahanan pangan yang umumnya berbasis indikator struktural. Penerapan metode Fuzzy C-Means memungkinkan representasi ketidakpastian dan zona transisi antarwilayah, di mana beberapa provinsi tidak diklasifikasikan secara tegas ke dalam satu kelompok risiko, melainkan memiliki tingkat keanggotaan pada lebih dari satu klaster.
+
+Hasil clustering menunjukkan adanya heterogenitas risiko ketidakstabilan harga antarwilayah yang konsisten dengan pola spasial dan ekonomi Indonesia, serta diperkuat oleh temuan analisis spillover harga yang mengindikasikan peran wilayah tertentu sebagai pusat transmisi volatilitas. Temuan ini menegaskan bahwa analisis berbasis volatilitas harga dapat melengkapi pendekatan ketahanan pangan konvensional, khususnya dalam mengidentifikasi wilayah dengan risiko laten yang bersifat gradual dan dinamis, sehingga relevan sebagai dasar pertimbangan dalam perumusan kebijakan stabilisasi harga dan mitigasi risiko pangan.
 \newpage
 % Hasil dan pembahasan menjelaskan hasil penelitian yang disertai dengan pembahasan atau diskusi yang bersifat komprehensif. Hasil penelitian dapat disajikan dalam bentuk tabel, gambar atau grafik atau bentuk visualisasi yang dapat dipahami pembaca dengan lebih baik.
 
@@ -755,6 +799,12 @@ S.~Askari,
 ``Fuzzy C-Means clustering algorithm for data with unequal cluster sizes and contaminated with noise and outliers: Review and development,''
 \textit{Expert Systems with Applications},
 vol.~165, p.~113856, 2021.
+
+\bibitem{ref10}
+Lambert, L. H., Schoeneman Jr., J. P., Lambert, D. M., and Brienen, M. W. (2025). Road networks and food price volatility. \textit{Global Food Security}, 47, 100884. https://doi.org/10.1016/j.gfs.2025.100884
+
+\bibitem{ref11}
+M. Haile, J. J. Nijhoff, and S. Jaffee, ``Food market integration and price differential across provinces in Indonesia,'' World Bank Group, Washington, DC, Tech. Rep., March 2019. [Online]. Available: https://documents.worldbank.org/en/publication/documents-reports/documentdetail
 
 \end{thebibliography}
 
