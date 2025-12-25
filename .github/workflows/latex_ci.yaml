@@ -2,7 +2,9 @@ name: Build LaTeX PDF
 
 on:
   push:
-    branches: [ main ]
+    branches:  
+      - main
+      - feat/raw_paper 
   pull_request:
 
 jobs:
@@ -20,5 +22,5 @@ jobs:
       - name: Upload PDF
         uses: actions/upload-artifact@v4
         with:
-          name: paper-pdf
+          name: paper-pdf-${{ github.ref_name }}
           path: final_paper.pdf
