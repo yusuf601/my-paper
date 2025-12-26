@@ -22,6 +22,7 @@
 \usepackage{longtable}
 % Subsection: A, B, C
 \renewcommand{\thesubsection}{\Alph{subsection}}
+\renewcommand{\tablename}{TABEL}
 
 % Subsubsection: 1, 2, 3 (BUKAN B.1)
 \renewcommand{\thesubsubsection}{\arabic{subsubsection}}
@@ -119,7 +120,7 @@ Corresponding author: muhyusuf@uho.ac.id
 
 % Abstrak
 \noindent
-{\textit{Abstrak}} — \textbf{Ketahanan pangan merupakan isu strategis di Indonesia mengingat adanya perbedaan kondisi sosial-ekonomi antarprovinsi serta fluktuasi harga pangan yang berpotensi memengaruhi daya beli dan stabilitas konsumsi rumah tangga. Penelitian ini bertujuan melakukan pengelompokan provinsi di Indonesia berdasarkan karakteristik deret waktu harga komoditas pangan guna memetakan risiko ketidakstabilan pangan secara data-driven. Pendekatan yang digunakan adalah metode Fuzzy C-Means (FCM), yang memungkinkan setiap provinsi memiliki derajat keanggotaan pada lebih dari satu klaster sehingga mampu merepresentasikan ketidakpastian dan zona transisi risiko antarwilayah. Data yang digunakan berupa \textit{time series} harga harian sebelas komoditas pangan strategis di 34 provinsi Indonesia, yang diekstraksi menjadi fitur statistik dan temporal meliputi rata-rata harga, volatilitas relatif (coefficient of variation), tren, autokorelasi, dan skewness. Penentuan konfigurasi cluster optimal dilakukan berdasarkan kriteria validasi fuzzy, termasuk Fuzzy Partition Coefficient dan Partition Entropy. Hasil analisis menunjukkan adanya heterogenitas risiko ketidakstabilan harga pangan antarprovinsi, yang dapat dikelompokkan ke dalam beberapa tingkat risiko dari rendah hingga tinggi. Temuan ini memberikan perspektif alternatif dalam analisis ketahanan pangan berbasis volatilitas harga dan berpotensi mendukung perumusan kebijakan stabilisasi harga serta mitigasi risiko pangan yang lebih terarah di tingkat regional.}
+{\textit{Abstrak}} — \textbf{Ketahanan pangan merupakan isu strategis di Indonesia mengingat adanya perbedaan kondisi sosial-ekonomi antarprovinsi serta fluktuasi harga pangan yang berpotensi memengaruhi daya beli dan stabilitas konsumsi rumah tangga. Penelitian ini bertujuan melakukan pengelompokan provinsi di Indonesia berdasarkan karakteristik data deret waktu harga komoditas pangan guna memetakan risiko ketidakstabilan pangan secara data-driven. Pendekatan yang digunakan adalah metode Fuzzy C-Means (FCM), yang memungkinkan setiap provinsi memiliki derajat keanggotaan pada lebih dari satu cluster sehingga mampu merepresentasikan ketidakpastian dan zona transisi risiko antarwilayah. Data yang digunakan berupa data deret waktu harga harian sebelas komoditas pangan strategis di 34 provinsi Indonesia, yang diekstraksi menjadi \textit{feature} statistik dan temporal meliputi rata-rata harga, volatilitas relatif (coefficient of variation), \textit{trend}, \textit{autocorrelation}, dan \textit{skewness}. Penentuan konfigurasi cluster optimal dilakukan berdasarkan kriteria validasi fuzzy, termasuk Fuzzy Partition Coefficient dan Partition Entropy. Hasil analisis menunjukkan adanya heterogenitas risiko ketidakstabilan harga pangan antarprovinsi, yang dapat dikelompokkan ke dalam beberapa tingkat risiko dari rendah hingga tinggi. Temuan ini memberikan perspektif alternatif dalam analisis ketahanan pangan berbasis volatilitas harga dan berpotensi mendukung perumusan kebijakan stabilisasi harga serta mitigasi risiko pangan yang lebih terarah di tingkat regional.}
 \vspace{0.2cm}
 \par\noindent
 \textbf{\textit{Kata kunci}}— volatilitas harga pangan, fuzzy C-means, analisis deret waktu, cluster wilayah, ketahanan pangan
@@ -147,31 +148,31 @@ Corresponding author: muhyusuf@uho.ac.id
 % Konten utama
 \section{Pendahuluan}
 
-Ketahanan pangan merupakan salah satu isu strategis nasional yang menjadi prioritas pembangunan Indonesia. Dengan wilayah geografis yang luas mencakup 34 provinsi dan karakteristik geografis kepulauan yang kompleks, Indonesia menghadapi tantangan signifikan dalam menjamin ketersediaan dan aksesibilitas pangan yang merata bagi seluruh masyarakat. Disparitas harga komoditas pangan antar daerah menjadi permasalahan serius yang dapat memicu ketidakstabilan pasokan dan berpotensi menyebabkan krisis pangan regional. Menurut Food and Agriculture Organization (FAO), ketahanan pangan tidak hanya mencakup aspek ketersediaan dan akses, tetapi juga stabilitas pasokan yang tercermin melalui kestabilan harga komoditas pangan dari waktu ke waktu\cite{ref1}.
+Ketahanan pangan merupakan salah satu isu strategis nasional yang menjadi prioritas pembangunan Indonesia. Dengan wilayah geografis yang luas mencakup 34 provinsi dan karakteristik geografis kepulauan yang kompleks, Indonesia menghadapi tantangan signifikan dalam menjamin ketersediaan dan aksesibilitas pangan yang merata bagi seluruh masyarakat. Disparitas harga komoditas pangan antar daerah menjadi permasalahan serius yang dapat memicu ketidakstabilan pasokan dan berpotensi menyebabkan krisis pangan regional. Menurut Food and Agriculture Organization (FAO), ketahanan pangan tidak hanya mencakup aspek ketersediaan dan akses, tetapi juga stabilitas pasokan yang tercermin melalui kestabilan harga komoditas pangan dari waktu ke waktu\cite{FAO2021SOFI}.
 
-Stabilitas harga merupakan salah satu pilar fundamental dalam ketahanan pangan karena volatilitas harga yang tinggi dapat mengganggu daya beli masyarakat dan mengancam akses terhadap pangan, terutama bagi kelompok rentan. Penelitian terkini menunjukkan adanya fenomena \textit{spillover effect} volatilitas harga pangan antar provinsi di Indonesia, di mana Pulau Jawa berperan sebagai \textit{transmitter} utama dengan korelasi volatilitas mencapai 0.92 ke Sumatra, 0.91 ke Kalimantan, dan 0.90 ke Papua \cite{ref2}. Lebih lanjut \cite{ref3}, Studi mengenai volatilitas harga pangan selama periode Covid-19 menemukan adanya hubungan jangka panjang antara fluktuasi harga komoditas strategis seperti cabai, beras, bawang merah, bawang putih, dan ayam dengan volatilitas inflasi regional. Temuan ini menunjukkan bahwa volatilitas harga pangan tidak hanya mencerminkan dinamika pasar lokal, tetapi juga dapat digunakan sebagai indikator awal terhadap potensi gangguan stabilitas ekonomi dan ketahanan pangan di tingkat wilayah.
+Stabilitas harga merupakan salah satu pilar fundamental dalam ketahanan pangan karena volatilitas harga yang tinggi dapat mengganggu daya beli masyarakat dan mengancam akses terhadap pangan, terutama bagi kelompok rentan. Penelitian terkini menunjukkan adanya fenomena \textit{spillover effect} volatilitas harga pangan antar provinsi di Indonesia, di mana Pulau Jawa berperan sebagai \textit{transmitter} utama dengan korelasi volatilitas mencapai 0.92 ke Sumatra, 0.91 ke Kalimantan, dan 0.90 ke Papua \cite{theresia_spillover_2025}. Lebih lanjut \cite{anwar_food_2023}, Studi mengenai volatilitas harga pangan selama periode Covid-19 menemukan adanya hubungan jangka panjang antara fluktuasi harga komoditas strategis seperti cabai, beras, bawang merah, bawang putih, dan ayam dengan volatilitas inflasi regional. Temuan ini menunjukkan bahwa volatilitas harga pangan tidak hanya mencerminkan dinamika pasar lokal, tetapi juga dapat digunakan sebagai indikator awal terhadap potensi gangguan stabilitas ekonomi dan ketahanan pangan di tingkat wilayah.
 
-Dalam konteks metodologi clustering untuk data \textit{time series}, pendekatan berbasis karakteristik statistik telah banyak digunakan untuk menangkap dinamika sistem yang kompleks dan tidak stabil. Penelitian mengenai \textit{autocorrelation-based fuzzy clustering} menunjukkan bahwa penggunaan fungsi autokorelasi sebagai basis pengelompokan memberikan fleksibilitas yang lebih tinggi, karena setiap \textit{time series} tidak ditetapkan secara eksklusif ke satu klaster, melainkan memiliki derajat keanggotaan terhadap beberapa klaster sekaligus. Pendekatan ini sangat relevan untuk data ekonomi dan finansial, termasuk harga pangan, yang cenderung mengandung \textit{noise} tinggi dan perilaku dinamis.
+Dalam konteks metodologi clustering untuk data deret waktu, pendekatan berbasis karakteristik statistik telah banyak digunakan untuk menangkap dinamika sistem yang kompleks dan tidak stabil. Penelitian mengenai \textit{autocorrelation-based fuzzy clustering} menunjukkan bahwa penggunaan fungsi autokorelasi sebagai basis pengelompokan memberikan fleksibilitas yang lebih tinggi, karena setiap deret waktu tidak ditetapkan secara eksklusif ke satu cluster, melainkan memiliki derajat keanggotaan terhadap beberapa cluster sekaligus. Pendekatan ini sangat relevan untuk data ekonomi dan finansial, termasuk harga pangan, yang cenderung mengandung \textit{noise} tinggi dan perilaku dinamis.
 
-Berbagai penelitian telah dilakukan untuk menganalisis pola harga dan ketahanan pangan di Indonesia menggunakan pendekatan clustering. Salah satu penelitian menerapkan metode \textit{Dynamic Time Warping} (DTW) untuk melakukan \textit{time series clustering} harga beras di 34 provinsi, yang mengelompokkan wilayah berdasarkan kesamaan pola temporal harga \cite{ref4}. Pendekatan serupa juga diterapkan dalam peramalan harga beras menggunakan hierarchical clustering dengan DTW distance, yang menghasilkan cophenetic coefficient sebesar 0.68 dan mengidentifikasi Kalimantan Tengah sebagai outlier. Studi lain menggunakan kombinasi metode hard clustering seperti K-Means dan K-Medoids serta soft clustering seperti Fuzzy C-Means untuk mengelompokkan 34 provinsi berdasarkan indikator ketahanan pangan dari BPS, dengan hasil menunjukkan bahwa K-Means menghasilkan dua klaster optimal yang memisahkan delapan provinsi rawan pangan dari 26 provinsi tahan pangan \cite{ref5}.
+Berbagai penelitian telah dilakukan untuk menganalisis pola harga dan ketahanan pangan di Indonesia menggunakan pendekatan clustering. Salah satu penelitian menerapkan metode \textit{Dynamic Time Warping} (DTW) untuk melakukan clustering deret waktu harga beras di 34 provinsi, yang mengelompokkan wilayah berdasarkan kesamaan pola temporal harga \cite{tsabitah_implementation_2025}. Pendekatan serupa juga diterapkan dalam peramalan harga beras menggunakan hierarchical clustering dengan DTW distance, yang menghasilkan cophenetic coefficient sebesar 0.68 dan mengidentifikasi Kalimantan Tengah sebagai outlier. Studi lain menggunakan kombinasi metode hard clustering seperti K-Means dan K-Medoids serta soft clustering seperti Fuzzy C-Means untuk mengelompokkan 34 provinsi berdasarkan indikator ketahanan pangan dari BPS, dengan hasil menunjukkan bahwa K-Means menghasilkan dua cluster optimal yang memisahkan delapan provinsi rawan pangan dari 26 provinsi tahan pangan \cite{prastanika_analisis_2023}.
 
 
-Studi lain yang menerapkan \textit{quantile-based fuzzy clustering} dengan memanfaatkan fitur \textit{conditional variance}, \textit{skewness}, dan \textit{kurtosis} menunjukkan bahwa momen statistik tingkat tinggi dapat menjadi dasar pengelompokan yang lebih robust, khususnya dalam menghadapi keberadaan \textit{outlier} \cite{ref6}. Selain itu, penelitian mengenai \textit{resilience indicators} pada data longitudinal juga memanfaatkan kombinasi \textit{variance}, \textit{lag-1 autocorrelation}, dan \textit{skewness} sebagai indikator fluktuasi dan ketahanan sistem terhadap gangguan eksternal \cite{ref7}, yang sejalan dengan karakteristik dinamika harga pangan antarwilayah.
+Studi lain yang menerapkan \textit{quantile-based fuzzy clustering} dengan memanfaatkan feature \textit{conditional variance}, \textit{skewness}, dan \textit{kurtosis} menunjukkan bahwa momen statistik tingkat tinggi dapat menjadi dasar pengelompokan yang lebih robust, khususnya dalam menghadapi keberadaan \textit{outlier} \cite{lopez-oriona_quantile-based_2021}. Selain itu, penelitian mengenai \textit{resilience indicators} pada data longitudinal juga memanfaatkan kombinasi \textit{variance}, \textit{lag-1 autocorrelation}, dan \textit{skewness} sebagai indikator fluktuasi dan ketahanan sistem terhadap gangguan eksternal \cite{poppe_exploration_2020}, yang sejalan dengan karakteristik dinamika harga pangan antarwilayah.
 
 % research gap
-Meskipun berbagai studi telah dilakukan untuk menganalisis pola harga dan ketahanan pangan di Indonesia, terdapat beberapa keterbatasan yang dapat diidentifikasi. Pertama, sebagian besar penelitian menggunakan pendekatan DTW distance yang berfokus pada kesamaan bentuk pola time series secara keseluruhan, namun kurang mengeksplorasi karakteristik statistik spesifik yang mencerminkan volatilitas, persistensi, dan distribusi harga. Kedua, penelitian clustering ketahanan pangan yang ada lebih banyak menggunakan indikator statis dari BPS, sementara analisis berbasis pola harga sebagai early warning system masih terbatas. Ketiga, metode hard clustering seperti K-Means menghasilkan pengelompokan yang rigid dan tidak mampu menangani overlapping characteristics antar provinsi, padahal dalam realitas, banyak provinsi yang memiliki karakteristik pola harga yang berada di zona transisi. Keempat, belum ada penelitian yang secara komprehensif mengintegrasikan lima karakteristik statistik time series (mean, coefficient of variation, autocorrelation, trend, dan skewness) sebagai feature untuk segmentasi provinsi berdasarkan pola volatilitas harga komoditas pangan strategis.
+Meskipun berbagai studi telah dilakukan untuk menganalisis pola harga dan ketahanan pangan di Indonesia, terdapat beberapa keterbatasan yang dapat diidentifikasi. Pertama, sebagian besar penelitian menggunakan pendekatan DTW distance yang berfokus pada kesamaan bentuk pola deret waktu secara keseluruhan, namun kurang mengeksplorasi karakteristik statistik spesifik yang mencerminkan volatilitas, persistensi, dan distribusi harga. Kedua, penelitian clustering ketahanan pangan yang ada lebih banyak menggunakan indikator statis dari BPS, sementara analisis berbasis pola harga sebagai sistem peringatan dini masih terbatas. Ketiga, metode hard clustering seperti K-Means menghasilkan pengelompokan yang rigid dan tidak mampu menangani karateristik \textit{overlapping} antar provinsi, padahal dalam realitas, banyak provinsi yang memiliki karakteristik pola harga yang berada di zona transisi. Keempat, belum ada penelitian yang secara komprehensif mengintegrasikan lima karakteristik statistik deret waktu (mean, coefficient of variation, autocorrelation, trend, dan skewness) sebagai \textit{feature} untuk segmentasi provinsi berdasarkan pola volatilitas harga komoditas pangan strategis.
 
 % solusi yang ditawarkan
 
-Untuk mengatasi keterbatasan tersebut, penelitian ini mengusulkan pendekatan berbasis algoritma \textit{Fuzzy C-Means} (FCM) clustering sebagai kontribusi utama. FCM memberikan derajat keanggotaan (\textit{membership degree}) yang fleksibel, sehingga setiap provinsi dapat memiliki tingkat keanggotaan pada lebih dari satu klaster secara simultan. Karakteristik ini sangat sesuai untuk data harga komoditas pangan yang bersifat dinamis dan fluktuatif, di mana batas antar kelompok wilayah tidak selalu tegas. 
+Untuk mengatasi keterbatasan tersebut, penelitian ini mengusulkan pendekatan berbasis algoritma \textit{Fuzzy C-Means} (FCM) clustering sebagai kontribusi utama. FCM memberikan derajat keanggotaan (\textit{membership degree}) yang fleksibel, sehingga setiap provinsi dapat memiliki tingkat keanggotaan pada lebih dari satu cluster secara simultan. Karakteristik ini sangat sesuai untuk data harga komoditas pangan yang bersifat dinamis dan fluktuatif, di mana batas antar kelompok wilayah tidak selalu tegas. 
 
-Selain itu, FCM relatif lebih robust dalam menghadapi ketidakpastian data dan mampu merepresentasikan sifat \textit{fuzzy} dari fenomena ekonomi, di mana suatu wilayah dapat berada dalam kondisi transisi antara stabil dan rawan. Dengan mengintegrasikan lima fitur statistik \textit{time series}—yaitu \textit{mean}, \textit{coefficient of variation}, \textit{autocorrelation}, \textit{trend}, dan \textit{skewness}—penelitian ini memberikan kerangka analisis yang lebih komprehensif untuk mengkarakterisasi dinamika volatilitas harga komoditas pangan antarprovinsi, serta mendukung identifikasi risiko ketahanan pangan secara lebih informatif.
+Selain itu, FCM relatif lebih robust dalam menghadapi ketidakpastian data dan mampu merepresentasikan sifat \textit{fuzzy} dari fenomena ekonomi, di mana suatu wilayah dapat berada dalam kondisi transisi antara stabil dan rawan. Dengan mengintegrasikan lima \textit{feature} statistik deret waktu yaitu \textit{mean}, \textit{coefficient of variation}, \textit{autocorrelation}, \textit{trend}, dan \textit{skewness}—penelitian ini memberikan kerangka analisis yang lebih komprehensif untuk mengkarakterisasi dinamika volatilitas harga komoditas pangan antarprovinsi, serta mendukung identifikasi risiko ketahanan pangan secara lebih informatif.
 
 % tujuan penelitian
-Penelitian ini bertujuan untuk melakukan segmentasi 34 provinsi di Indonesia berdasarkan pola volatilitas harga 10 komoditas pangan strategis menggunakan algoritma Fuzzy C-Means Clustering. Analisis dilakukan untuk mengidentifikasi karakteristik cluster yang terbentuk dan menentukan provinsi-provinsi yang memiliki pola volatilitas harga tinggi yang mengindikasikan kerentanan terhadap krisis pangan. Hasil penelitian menunjukkan terbentuknya dua cluster optimal yang dapat digunakan sebagai dasar sistem peringatan dini (early warning system) bagi pengambil kebijakan. Kontribusi penelitian ini meliputi: (1) penyediaan metode segmentasi wilayah berbasis pola volatilitas harga yang lebih fleksibel dan robust melalui pendekatan fuzzy clustering; (2) identifikasi provinsi-provinsi prioritas yang memerlukan intervensi kebijakan stabilisasi harga seperti subsidi, operasi pasar, atau penguatan buffer stock; (3) pengembangan framework analisis yang mengintegrasikan multiple time series features untuk early warning system krisis pangan; dan (4) rekomendasi kebijakan yang berbasis evidence untuk penguatan ketahanan pangan regional di Indonesia.
+Penelitian ini bertujuan untuk melakukan segmentasi 34 provinsi di Indonesia berdasarkan pola volatilitas harga 10 komoditas pangan strategis menggunakan algoritma Fuzzy C-Means Clustering. Analisis dilakukan untuk mengidentifikasi karakteristik cluster yang terbentuk dan menentukan provinsi-provinsi yang memiliki pola volatilitas harga tinggi yang mengindikasikan kerentanan terhadap krisis pangan. Hasil penelitian menunjukkan terbentuknya dua cluster optimal yang dapat digunakan sebagai dasar sistem peringatan dini (early warning system) bagi pengambil kebijakan. Kontribusi penelitian ini meliputi: (1) penyediaan metode segmentasi wilayah berbasis pola volatilitas harga yang lebih fleksibel dan robust melalui pendekatan fuzzy clustering; (2) identifikasi provinsi-provinsi prioritas yang memerlukan intervensi kebijakan stabilisasi harga seperti subsidi, operasi pasar, atau penguatan \textit{buffer stock}; (3) pengembangan framework analisis yang mengintegrasikan deret waktu multipel \textit{feature} untuk sistem peringatan dini krisis pangan; dan (4) rekomendasi kebijakan yang berbasis bukti untuk penguatan ketahanan pangan regional di Indonesia.
 
 \section{Metode Penelitian}
-Penelitian ini dilakukan melalui beberapa tahapan sistematis untuk melakukan segmentasi provinsi berdasarkan pola volatilitas harga komoditas pangan menggunakan algoritma Fuzzy C-Means Clustering. Alur penelitian secara keseluruhan ditunjukkan pada Gambar \ref{fig:flowchart}. Tahapan penelitian dimulai dari pengumpulan data time series harga komoditas pangan dari 34 provinsi di Indonesia, dilanjutkan dengan preprocessing data untuk memastikan kualitas dan konsistensi data. Selanjutnya dilakukan ekstraksi fitur statistik time series yang mencakup mean, coefficient of variation, autocorrelation, trend, dan skewness untuk merepresentasikan karakteristik pola harga di setiap provinsi. Fitur-fitur tersebut kemudian menjadi input untuk algoritma Fuzzy C-Means Clustering yang menghasilkan segmentasi provinsi ke dalam beberapa cluster. Jumlah cluster optimal ditentukan melalui evaluasi menggunakan beberapa indeks validasi cluster. Terakhir, dilakukan karakterisasi dan interpretasi setiap cluster untuk mengidentifikasi provinsi-provinsi yang rawan krisis pangan berdasarkan pola volatilitas harga komoditas. Penjelasan detail dari setiap tahapan penelitian diuraikan pada subsection berikut.
+Penelitian ini dilakukan melalui beberapa tahapan sistematis untuk melakukan segmentasi provinsi berdasarkan pola volatilitas harga komoditas pangan menggunakan algoritma Fuzzy C-Means Clustering. Alur penelitian secara keseluruhan ditunjukkan pada Gambar \ref{fig:flowchart}. Tahapan penelitian dimulai dari pengumpulan data deret waktu harga komoditas pangan dari 34 provinsi di Indonesia, dilanjutkan dengan preprocessing data untuk memastikan kualitas dan konsistensi data. Selanjutnya dilakukan ekstraksi \textit{feature} statistik deret waktu yang mencakup mean, coefficient of variation, autocorrelation, trend, dan skewness untuk merepresentasikan karakteristik pola harga di setiap provinsi. \textit{feature} tersebut kemudian menjadi input untuk algoritma Fuzzy C-Means Clustering yang menghasilkan segmentasi provinsi ke dalam beberapa cluster. Jumlah cluster optimal ditentukan melalui evaluasi menggunakan beberapa indeks validasi cluster. Terakhir, dilakukan karakterisasi dan interpretasi setiap cluster untuk mengidentifikasi provinsi-provinsi yang rawan krisis pangan berdasarkan pola volatilitas harga komoditas. Penjelasan detail dari setiap tahapan penelitian diuraikan pada subsection berikut.
 
 \begin{figure}[htbp]
     \centering
@@ -181,7 +182,7 @@ Penelitian ini dilakukan melalui beberapa tahapan sistematis untuk melakukan seg
 \end{figure}
 \subsection{Data dan Sumber Data}
 
-Penelitian ini menggunakan data time series harga komoditas pangan yang bersumber dari Kaggle \cite{ref8}. Dataset terdiri dari 13 komoditas pangan strategis dengan periode observasi dari Januari 2022 hingga September 2024. Setiap dataset merepresentasikan harga satu komoditas untuk 34 provinsi di Indonesia dalam format mingguan. Total observasi mencakup 34 provinsi $\times$ 143 minggu $\times$ 13 komoditas, menghasilkan 63.206 titik data harga komoditas pangan.
+Penelitian ini menggunakan data deret waktu harga komoditas pangan yang bersumber dari Kaggle \cite{datavidia_indonesia_2025}. Dataset terdiri dari 13 komoditas pangan strategis dengan periode observasi dari Januari 2022 hingga September 2024. Setiap dataset merepresentasikan harga satu komoditas untuk 34 provinsi di Indonesia dalam format mingguan. Total observasi mencakup 34 provinsi $\times$ 143 minggu $\times$ 13 komoditas, menghasilkan 63.206 titik data harga komoditas pangan.
 
 Tiga belas komoditas pangan yang dianalisis dalam penelitian ini meliputi:
 \begin{enumerate}
@@ -204,7 +205,7 @@ Format data yang digunakan adalah \textit{cross-sectional time series} (panel da
 
 \begin{table}[htbp]
     \centering
-    \caption{Contoh Struktur Data Harga Komoditas Bawang Merah (dalam Rupiah)}
+    \caption{CONTOH STRUKTUR DATA HARGA KOMODITAS BAWANG MERAH (DALAM RUPIAH)}
     \label{tab:sample_data}
     \begin{tabular}{|c|c|c|c|c|c|}
         \hline
@@ -225,20 +226,20 @@ Setiap baris pada dataset merepresentasikan harga komoditas pada tanggal tertent
 
 \subsection{Preprocessing}
 
-Explaratory data analisis(EDA) awal terhadap 13 komoditas pangan menunjukkan adanya missing value dengan proporsi yang berbeda-beda,untuk memastikan kualitas dan reliabilitas analisis clustering clustering,dilakukan evaluasi sistematis terhadap pola missing value setiap komoditas.
+\textit{Explaratory Data Analisis}(EDA) awal terhadap 13 komoditas pangan menunjukkan adanya missing value dengan proporsi yang berbeda-beda,untuk memastikan kualitas dan reliabilitas analisis clustering,dilakukan evaluasi sistematis terhadap pola missing value pada setiap komoditas.
 
 \subsubsection{Tahap 1: Identifikasi komoditas dengan Missing Value Ekstrem}
 
 Analisis missing value per komoditas menunjukkan bahwa dua komoditas memiliki proporsi missing value yang sangat tinggi:
 
 \begin{itemize}
-    \item \textbf{Cabai Rawit Merah}: 80.78\% baris mengandung missing value, dengan Provinsi Aceh mencatat 77.89\% missing dari total observasi
-    \item \textbf{Minyak Goreng Curah}: 48.01\% baris mengandung missing value, dengan beberapa provinsi seperti Maluku Utara (34.26\%), Kalimantan Utara (29.68\%), dan Papua (19.62\%) memiliki missing value substansial
+    \item Cabai Rawit Merah: 80.78\% baris mengandung missing value, dengan Provinsi Aceh mencatat 77.89\% missing dari total observasi
+    \item Minyak Goreng Curah: 48.01\% baris mengandung missing value, dengan beberapa provinsi seperti Maluku Utara (34.26\%), Kalimantan Utara (29.68\%), dan Papua (19.62\%) memiliki missing value substansial
 \end{itemize}
 
 Kedua komoditas ini di-drop dari analisis dengan pertimbangan:
 \begin{enumerate}
-    \item Proporsi missing value yang sangat tinggi (>40\%) dapat menghasilkan bias signifikan dalam imputasi
+    \item Proporsi missing value yang sangat tinggi ($>40\%)$ dapat menghasilkan bias signifikan dalam imputasi
     \item Missing value yang ekstrem pada provinsi-provinsi tertentu mengindikasikan potensi systematic data collection issues
     \item Imputasi pada data dengan missing ekstrem akan lebih banyak menghasilkan data sintetik dibanding data observasi aktual, yang bertentangan dengan prinsip analisis berbasis evidence
 \end{enumerate}
@@ -247,39 +248,38 @@ Setelah penghapusan dua komoditas tersebut, tersisa 11 komoditas untuk analisis 
 
 \subsubsection{Tahap 2: Analisis Pola Missing Value}
 
-untuk 11 komoditas tersisa dilakukan analisis pola missing value menggunakan heatmap untuk mengidentifikasi temporal pattern dari missing data gambar\ref{fig:missing_heatmap},dapat terlihat jika komoditas minyak goreng kemasan memiliki korelasi yang tidak cukup kuat sementara 10 komoditas lain justru identik dengan nilai $\approx 1$
-
+Untuk 11 komoditas tersisa, dilakukan analisis pola missing value menggunakan heatmap guna mengidentifikasi kesamaan temporal kemunculan data hilang antar komoditas. Berdasarkan visualisasi pada Gambar \ref{fig:missing_heatmap}, terlihat bahwa sebagian besar komoditas memiliki pola missing yang sangat serupa, yang ditunjukkan oleh intensitas warna yang hampir seragam. Hal ini mengindikasikan tingkat korelasi pola missing yang sangat tinggi antar komoditas tersebut. Sebaliknya, komoditas minyak goreng kemasan menunjukkan pola yang berbeda dengan intensitas warna yang lebih lemah, mengindikasikan korelasi yang relatif lebih rendah dibandingkan komoditas lainnya.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{heatmap_missing correlation.png}
-    \caption{Heatmap korelasi missing antar komoditas}
+    \caption{Heatmap Korelasi Pola Missing Data Antar Komoditas}
     \label{fig:missing_heatmap}
 \end{figure}
 
-lebih lanjut pada gambar\ref{fig:overlap_missing} terlihat bahwa komoditas minyak goreng kemasan memiliki unique \textit{missing value} dimana 10 komoditas lain hari missing data hanya 46 hari sementara komoditas minyak goreng kemasan justru sampai 93 hari,ini juga semakin menegaskan bahwa tipe missing pada dataset adalah \textit{Missing Completely at Random} (MCAR),sementara itu pada komoditas minyak goreng dengan missing \textit{unique} maka kemunkinan missing adalah  \textit{Missing at Random} (MAR) atau \textit{Missing Not at Random} (MNAR).
+lebih lanjut pada gambar\ref{fig:overlap_missing} terlihat bahwa komoditas minyak goreng kemasan memiliki pola missing yang berbeda dibandingkan komoditas lainnya. Berdasarkan hasil perhitungan jumlah data hilang, sepuluh komoditas memiliki jumlah hari missing yang relatif sama, yaitu sebanyak 46 hari, sedangkan komoditas minyak goreng kemasan memiliki jumlah missing yang jauh lebih tinggi, yaitu sebanyak 93 hari. Perbedaan ini tercermin pada visualisasi heatmap melalui intensitas warna yang lebih kontras dibandingkan komoditas lainnya. Kondisi tersebut mengindikasikan adanya pola missing yang tidak seragam antar komoditas. Secara konseptual, keseragaman pola missing pada sebagian besar komoditas mengarah pada mekanisme \textit{Missing Completely at Random} (MCAR)\cite{little_statistical_2019}, sementara pola khusus pada komoditas minyak goreng kemasan mengindikasikan kemungkinan mekanisme \textit{Missing at Random} (MAR) atau \textit{Missing Not at Random} (MNAR). Namun demikian, klasifikasi mekanisme missing ini bersifat indikatif dan memerlukan pengujian statistik lanjutan untuk dapat dipastikan secara formal\cite{little_statistical_2019}.
 
-Mengingat perbedaan mekanisme missing dapat mengintroduksi bias dalam analisis clustering dan mengurangi homogenitas karakteristik data, komoditas dengan pola missing unik ini di-drop dari analisis. Keputusan ini juga didukung oleh prinsip bahwa mixing data dengan mekanisme missing yang berbeda dapat menghasilkan estimasi parameter yang bias dan inference yang tidak valid.
+Mengingat perbedaan mekanisme missing dapat mengintroduksi bias dalam analisis clustering dan mengurangi homogenitas karakteristik data\cite{little_statistical_2019}, komoditas dengan pola missing unik ini di-drop dari analisis. Keputusan ini juga didukung oleh prinsip bahwa mixing data dengan mekanisme missing yang berbeda dapat menghasilkan estimasi parameter yang bias dan inferensi yang tidak valid\cite{little_statistical_2019}.
 
 Pada data harga 10 komoditas terpilih, ditemukan periode dengan missing value yang terjadi secara serentak pada rentang tanggal 10 Juni 2022 hingga 19 Juni 2022. Periode ini selanjutnya disebut sebagai \textit{black period}, karena seluruh komoditas tidak memiliki observasi harga pada rentang waktu tersebut.
 
-Sebagai tindak lanjut, seluruh observasi pada rentang \textit{black period} tersebut dihapus dari dataset dengan tujuan untuk menghindari distorsi pada proses ekstraksi fitur statistik, khususnya pada perhitungan autokorelasi, tren jangka panjang, dan ukuran volatilitas. Keberadaan periode tanpa observasi secara kolektif berpotensi mengganggu kontinuitas deret waktu dan menghasilkan estimasi parameter yang tidak stabil, sehingga penghapusan periode ini dilakukan untuk menjaga integritas analisis dan konsistensi pola temporal data.
+Sebagai tindak lanjut, seluruh observasi pada rentang \textit{black period} tersebut dihapus dari dataset dengan tujuan untuk menghindari distorsi pada proses ekstraksi \textit{feature} statistik, khususnya pada perhitungan \textit{autocorrelation}, tren jangka panjang, dan ukuran volatilitas. Keberadaan periode tanpa observasi secara kolektif berpotensi mengganggu kontinuitas data deret waktu dan menghasilkan estimasi parameter yang tidak stabil, sehingga penghapusan periode ini dilakukan untuk menjaga integritas analisis dan konsistensi pola temporal data.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{overlap_missing_days.png}
-    \caption{Heatmap overlap missing day}
+    \caption{\textit{Heatmap} Tumpang Tindih Hari Dengan \textit{Missing Value} Antar Komoditas}
     \label{fig:overlap_missing}
 \end{figure}
 
 Selanjutnya setelah mengatasi missing value,dibutuhkan juga pendeteksian data anomali atau \textit{outliers} dan metode untuk menangani \textit{outliers}.Outlier pada data harga komoditas dapat berasal dari noise atau genuine extreme events seperti lonjakan harga akibat gangguan pasokan. Untuk menangani outlier tanpa menghilangkan informasi penting tentang volatilitas, digunakan pendekatan adaptive IQR-based outlier detection dengan strategi yang disesuaikan untuk setiap komoditas.
 
-\subsubsection{tahap1: Deteksi Outliers}
+\subsubsection{Tahap 1: Deteksi Outliers}
 Penanganan outlier pada data harga komoditas dilakukan secara adaptif berdasarkan tingkat volatilitas relatif yang diukur menggunakan coefficient of variation (CV). Pendekatan ini digunakan untuk menyesuaikan sensitivitas deteksi outlier terhadap karakteristik fluktuasi masing-masing komoditas, sehingga lonjakan harga yang bersifat struktural tidak keliru diidentifikasi sebagai noise. 
 
 Tabel~\ref{tab:outlier_strategy} merangkum nilai CV, ambang deteksi outlier berbasis interquartile range (IQR), serta batas interpolasi yang digunakan untuk setiap komoditas. Komoditas dengan tingkat volatilitas tinggi diberikan ambang IQR yang lebih longgar untuk menjaga pola lonjakan harga alami, sementara komoditas yang relatif stabil diperlakukan dengan kriteria yang lebih ketat. Pendekatan ini memungkinkan proses pembersihan data yang kontekstual tanpa menghilangkan informasi volatilitas yang relevan untuk analisis lanjutan.
 
 \begin{table}[H]
-\caption{Strategi penanganan outlier adaptif berbasis coefficient of variation (CV) pada masing-masing komoditas pangan}
+\caption{STRATEGI PENANGANAN OUTLIER ADAPTIF BERBASIS COEFFICIENT OF VARIATION (CV) PADA MASING-MASING KOMODITAS PANGAN}
 \label{tab:outlier_strategy}
 \centering
 \begin{tabular}{lcccc}
@@ -303,7 +303,7 @@ Daging Sapi    & 0.09 & 0.010   & 0.0\%                & 4$\times$       \\ \hli
 setelah mengidentifikasi tipe outliers pada tiap komoditas,maka selanjutnya adalah menghapus outliers dan melakukan impututasi pada data tersisa,pada tabel \ref{tab:missing_after_cleaning} setelah melakukan cleaning pada outliers dan melakukan imputasi dengan metode interpolasi linear sisa missing value pada sebagian besar komoditas sudah tidak ada sementara itu untuk komoditas Cabai merah masih tersisa 140(15\%) data dan pada komoditas daging sapi 459 data(47\%),komoditas tersebut masih akan dipertahankan karena data valid masih diatas threshold minimal yaitu 50\%.
 
 \begin{table}[H]
-\caption{Jumlah missing value setelah proses pembersihan pada masing-masing komoditas}
+\caption{JUMLAH MISSING VALUE SETELAH PROSES PEMBERSIHAN PADA MASING-MASING KOMODITAS}
 \label{tab:missing_after_cleaning}
 \centering
 \begin{tabular}{lc}
@@ -322,9 +322,9 @@ Tepung Terigu   & 0  \\ \hline
 \end{tabular}
 \end{table}
 
-\subsection{Feature Extraction}
+\subsection{\textit{Feature Extraction}}
 
-Algoritma \textit{Fuzzy C-Means} membutuhkan representasi numerik dari pola harga \textit{time series} untuk melakukan proses clustering. Pada penelitian ini digunakan lima fitur statistik utama yang diekstraksi dari data harga komoditas untuk merepresentasikan karakteristik pola harga antar provinsi.
+Algoritma \textit{Fuzzy C-Means} membutuhkan representasi numerik dari pola harga deret waktu untuk melakukan proses clustering. Pada penelitian ini digunakan lima \textit{feature} statistik utama yang diekstraksi dari data harga komoditas untuk merepresentasikan karakteristik pola harga antar provinsi.
 
 \textbf{1. Rata-rata (\textit{Mean})}
 
@@ -343,7 +343,7 @@ di mana \(X_{ijt}\) menyatakan harga komoditas ke-\(j\) di provinsi ke-\(i\) pad
 
 \textbf{2. Coefficient of Variation (CV)}
 
-\textit{Coefficient of Variation} (CV) merupakan ukuran statistik yang menggambarkan tingkat volatilitas relatif suatu data terhadap nilai rata-ratanya. Berbeda dengan simpangan baku absolut, CV bersifat bebas skala sehingga memungkinkan perbandingan tingkat volatilitas antar komoditas yang memiliki level harga berbeda. Secara matematis, CV didefinisikan sebagai:
+\textit{Coefficient of Variation} (CV) merupakan ukuran statistik yang menggambarkan tingkat volatilitas relatif suatu data terhadap nilai rata-ratanya\cite{poppe_exploration_2020}. Berbeda dengan simpangan baku absolut, CV bersifat bebas skala sehingga memungkinkan perbandingan tingkat volatilitas antar komoditas yang memiliki level harga berbeda. Secara matematis, CV didefinisikan sebagai:
 
 \begin{equation}
 CV_{ij} = \frac{\sigma_{ij}}{\bar{X}_{ij}} \times 100\% \tag{2}
@@ -357,7 +357,7 @@ di mana \(X_{ijt}\) merupakan harga komoditas ke-\(j\) di provinsi ke-\(i\) pada
 
 \textbf{3.Autocorrelation(lag - 1)}
 
-Autocorrelation adalah ukuran seberapa kuat suatu variabel berkolerasi dengan dirinya sendiri di waktu atau jarak yang berbeda,autocorrelation mengukur hubungan nilai deret waktu sekarang dengan nilai deret waktu yang sama pada beberapa langkah sebelumnya sebelumnya(lag),secara matematis autocorrelation didefinisikan sebagai berikut:
+Autocorrelation adalah ukuran seberapa kuat suatu variabel berkolerasi dengan dirinya sendiri di waktu atau jarak yang berbeda\cite{box_time_2008}.Autocorrelation mengukur hubungan nilai data deret waktu sekarang dengan nilai data deret waktu yang sama pada beberapa langkah sebelumnya sebelumnya(lag),secara matematis autocorrelation didefinisikan sebagai berikut:
 
 \begin{equation}
 \rho_{ij}(1) = \frac{\sum_{t=2}^{T} (X_{ijt} - \bar{X}_{ij})(X_{ij(t-1)} - \bar{X}_{ij})}{\sum_{t=1}^{T} (X_{ijt} - \bar{X}_{ij})^2} \tag{4}
@@ -367,7 +367,7 @@ formula diatas pada dasarnya merupakan bentuk khusus koefisien korelasi pearson 
 
 \textbf{4.Trend}
 
-Trend adalah metode untuk mengidentifikasi kecenderungan  atau arah  perkembangan data dalam jangka waktu panjang,secara matermatis \textit{Trend} didefinisikan sebagai berikut:
+Trend adalah metode untuk mengidentifikasi kecenderungan  atau arah  perkembangan data dalam jangka waktu panjang\cite{box_time_2008},secara matermatis \textit{Trend} didefinisikan sebagai berikut:
 \begin{equation}
 X_{ijt} = \alpha_{ij} + \beta_{ij} \cdot t + \epsilon_{ijt} \tag{5}
 \end{equation}
@@ -376,7 +376,7 @@ dimana $X_{ijt}$ adalah posisi pada unit $i$,komoditas $j$ dan waktu $t$ $\alpha
 \begin{equation}
 \beta_{ij} = \frac{T\sum_{t=1}^{T} t \cdot X_{ijt} - \sum_{t=1}^{T} t \sum_{t=1}^{T} X_{ijt}}{T\sum_{t=1}^{T} t^2 - \left(\sum_{t=1}^{T} t\right)^2} \tag{6}
 \end{equation}
-Merepresentasikan komponen kecenderungan jangka panjang dalam deret waktu harga (naik, turun, atau stabil).
+Merepresentasikan komponen kecenderungan jangka panjang dalam data deret waktu harga (naik, turun, atau stabil).
 
 \textbf{5.Skewness}
 
@@ -387,15 +387,16 @@ Skew_{ij} = \frac{T}{(T-1)(T-2)} \sum_{t=1}^{T} \left(\frac{X_{ijt} - \bar{X}_{i
 \end{equation}
 Nilai \textit{Skewness} bernilai nol pada distribusi yang simetris, bernilai positif pada distribusi yang condong ke kanan (right-skewed), dan bernilai negatif pada distribusi yang condong ke kiri (left-skewed).\textit{Skewness} yang tinggi mengindikasikan potensi kejadian harga ekstrem,khususnya lonjakan harga yang jarang terjadi namun signifikan.
 
-Berdasarkan proses \textit{feature extraction} yang dilakukan, setiap komoditas pada masing-masing provinsi direpresentasikan oleh lima fitur statistik utama, yaitu rata-rata harga (mean), coefficient of variation (CV), autokorelasi lag-1, tren jangka panjang, dan skewness distribusi harga. Kelima fitur tersebut secara bersama-sama merepresentasikan level harga umum, tingkat volatilitas relatif, persistensi temporal, kecenderungan perubahan jangka panjang, serta potensi kejadian harga ekstrem. Kombinasi fitur ini dirancang untuk menangkap karakteristik dinamika harga yang relevan dalam mengidentifikasi perbedaan tingkat risiko kerawanan pangan antar wilayah. Selanjutnya, matriks fitur yang dihasilkan digunakan sebagai masukan dalam proses clustering.
+Berdasarkan proses \textit{feature extraction} yang dilakukan, setiap komoditas pada masing-masing provinsi direpresentasikan oleh lima \textit{feature} statistik utama, yaitu rata-rata harga (mean), coefficient of variation (CV), \textit{autocorrelation} lag-1, tren jangka panjang, dan skewness distribusi harga. Kelima \textit{feature} tersebut secara bersama-sama merepresentasikan level harga umum, tingkat volatilitas relatif, persistensi temporal, kecenderungan perubahan jangka panjang, serta potensi kejadian harga ekstrem. Kombinasi \textit{feature} ini dirancang untuk menangkap karakteristik dinamika harga yang relevan dalam mengidentifikasi perbedaan tingkat risiko kerawanan pangan antar wilayah. Selanjutnya, matriks \textit{feature} yang dihasilkan digunakan sebagai masukan dalam proses clustering.
 
-Setelah seluruh fitur statistik diekstraksi, matriks fitur yang dihasilkan dinormalisasi menggunakan metode Z-score. Normalisasi ini diterapkan untuk menyamakan skala antar fitur yang memiliki rentang nilai dan sebaran yang berbeda. Proses normalisasi dilakukan pada ruang fitur, bukan pada data deret waktu harga secara langsung, sehingga interpretasi statistik dari setiap fitur tetap terjaga. Normalisasi ini diperlukan sebelum proses clustering karena algoritma \textit{Fuzzy C-Means} berbasis jarak Euclidean yang sensitif terhadap perbedaan skala variabel.
+Setelah seluruh \textit{feature} statistik diekstraksi, matriks \textit{feature} yang dihasilkan dinormalisasi menggunakan metode Z-score. Normalisasi ini diterapkan untuk menyamakan skala antar \textit{feature} yang memiliki rentang nilai dan sebaran yang berbeda. Proses normalisasi dilakukan pada ruang \textit{feature}, bukan pada data deret waktu harga secara langsung, sehingga interpretasi statistik dari setiap \textit{feature} tetap terjaga. Normalisasi ini diperlukan sebelum proses clustering karena algoritma \textit{Fuzzy C-Means} berbasis jarak Euclidean yang sensitif terhadap perbedaan skala variabel \cite{garcia_data_2015}.
 
 \subsection{Algoritma Fuzzy C-Means Clustering}
 
-Fuzzy C-Means (FCM) merupakan salah satu algoritma clustering yang mengadopsi konsep \textit{fuzzy logic}, yaitu pendekatan matematis yang memungkinkan nilai keanggotaan tidak bersifat biner (\textit{true} atau \textit{false}), melainkan berada pada rentang kontinu antara 0 dan 1. Dalam konteks fuzzy clustering, setiap titik data tidak dipaksa untuk menjadi anggota tunggal dari satu cluster, tetapi dapat memiliki derajat keanggotaan pada beberapa cluster secara bersamaan.
+Fuzzy C-Means (FCM) merupakan salah satu algoritma clustering yang dikembangkan 
+oleh \textit{Bezdek} \cite{bezdek_pattern_1981} yang mengadopsi konsep \textit{fuzzy logic},yaitu pendekatan matematis yang memungkinkan nilai keanggotaan tidak bersifat biner (\textit{true} atau \textit{false}), melainkan berada pada rentang kontinu antara 0 dan 1. Dalam konteks fuzzy clustering, setiap titik data tidak dipaksa untuk menjadi anggota tunggal dari satu cluster, tetapi dapat memiliki derajat keanggotaan pada beberapa cluster secara bersamaan\cite{bezdek_pattern_1981}.
 
-Pendekatan ini sangat sesuai untuk data dengan karakteristik yang saling tumpang tindih, ukuran cluster yang tidak seragam, serta data yang mengandung noise dan outlier, sehingga memberikan fleksibilitas yang lebih tinggi dibandingkan metode hard clustering \cite{ref9}.
+Pendekatan ini sangat sesuai untuk data dengan karakteristik yang saling tumpang tindih, ukuran cluster yang tidak seragam, serta data yang mengandung noise dan outlier, sehingga memberikan fleksibilitas yang lebih tinggi dibandingkan metode hard clustering \cite{askari_fuzzy_2021}.
 
 Algoritma Fuzzy C-Means bekerja dengan meminimalkan fungsi objektif yang mengukur jarak antara data dan pusat cluster dengan mempertimbangkan derajat keanggotaan fuzzy. Fungsi objektif FCM dirumuskan sebagai berikut:
 
@@ -403,9 +404,9 @@ Algoritma Fuzzy C-Means bekerja dengan meminimalkan fungsi objektif yang menguku
 J_m = \sum_{i=1}^{N} \sum_{k=1}^{c} u_{ik}^m \left\lVert x_i - c_j \right\rVert^2 \tag{8}
 \end{equation}
 
-di mana \(x_i\) merupakan vektor fitur dari data ke-\(i\), \(v_k\) adalah pusat cluster ke-\(k\), \(u_{ik}\) menyatakan derajat keanggotaan data ke-\(i\) terhadap cluster ke-\(k\), \(m > 1\) adalah parameter \textit{fuzziness} yang mengontrol tingkat ketidakjelasan partisi, \(N\) adalah jumlah total data, dan \(c\) adalah jumlah cluster. 
+di mana \(x_i\) merupakan vektor \textit{feature} dari data ke-\(i\), \(v_k\) adalah pusat cluster ke-\(k\), \(u_{ik}\) menyatakan derajat keanggotaan data ke-\(i\) terhadap cluster ke-\(k\), \(m > 1\) adalah parameter \textit{fuzziness} yang mengontrol tingkat ketidakjelasan partisi, \(N\) adalah jumlah total data, dan \(c\) adalah jumlah cluster. 
 
-Nilai derajat keanggotaan(\textit{membership}) sendiri diperbarui pada setiap iterasi berdasarkan jarak relatif data terhadap seluruh pusat cluster, dengan formula sebagai berikut:
+Nilai derajat keanggotaan(\textit{membership}) sendiri diperbarui pada setiap iterasi berdasarkan jarak relatif data terhadap seluruh pusat cluster\cite{bezdek_pattern_1981}, dengan formula sebagai berikut:
 
 \begin{equation}
 u_{ij} = \frac{1}{\sum_{k=1}^C \left( \frac{\|x_i - c_j\|}{\|x_i - c_k\|} \right)^{\frac{2}{m-1}}} ] \tag{9}
@@ -440,14 +441,14 @@ Proses iterasi dilakukan secara berulang dengan memperbarui nilai keanggotaan da
 \end{algorithmic}
 \end{algorithm}
 
-Fuzzy C-Means merupakan metode \textit{unsupervised learning}, sehingga evaluasi hasil clustering dilakukan menggunakan metrik validasi internal yang mengukur tingkat kekompakan dan keterpisahan cluster. Pada penelitian ini digunakan beberapa metrik validasi, antara lain Davies–Bouldin Index, Fuzzy Partition Coefficient (FPC), Partition Entropy (PE).
+Fuzzy C-Means merupakan metode \textit{unsupervised learning}, sehingga evaluasi hasil clustering dilakukan menggunakan metrik validasi internal yang mengukur tingkat kekompakan dan keterpisahan cluster. Pada penelitian ini digunakan beberapa metrik validasi, antara lain Davies–Bouldin Index\cite{davies_cluster_1979}, Fuzzy Partition Coefficient (FPC)\cite{bezdek_pattern_1981}, Partition Entropy (PE)\cite{bezdek_cluster_1973}.
 
-Pemilihan algoritma Fuzzy C-Means pada penelitian ini didasarkan pada karakteristik data yang menunjukkan adanya tumpang tindih antar kelompok, keberadaan noise dan outlier, serta distribusi fitur yang tidak seragam. Studi sebelumnya menunjukkan bahwa Fuzzy C-Means (FCM) mampu mengelompokkan data dengan ukuran cluster yang tidak seimbang, mengandung noise, dan memiliki distribusi massa yang tidak uniform secara lebih efektif dibandingkan algoritma clustering lainnya \cite{ref9}. Karakteristik tersebut sejalan dengan data penelitian ini yang direpresentasikan dalam bentuk fitur statistik hasil ekstraksi dari deret waktu harga, sehingga pendekatan clustering berbasis fuzzy dinilai lebih sesuai untuk menangkap pola transisi dan ketidakpastian antar cluster.
+Pemilihan algoritma Fuzzy C-Means pada penelitian ini didasarkan pada karakteristik data yang menunjukkan adanya tumpang tindih antar kelompok, keberadaan noise dan outlier, serta distribusi \textit{feature} yang tidak seragam. Studi sebelumnya menunjukkan bahwa Fuzzy C-Means (FCM) mampu mengelompokkan data dengan ukuran cluster yang tidak seimbang, mengandung noise, dan memiliki distribusi massa yang tidak uniform secara lebih efektif dibandingkan algoritma clustering lainnya \cite{askari_fuzzy_2021}. Karakteristik tersebut sejalan dengan data penelitian ini yang direpresentasikan dalam bentuk \textit{feature} statistik hasil ekstraksi dari data deret waktu harga, sehingga pendekatan clustering berbasis fuzzy dinilai lebih sesuai untuk menangkap pola transisi dan ketidakpastian antar cluster.
 
 
 \subsection{Pemilihan Jumlah Cluster Optimal}
 
-Penentuan jumlah cluster optimal dapat dilakukan melalui dua pendekatan utama. Pendekatan pertama menggunakan indeks validasi tertentu yang secara langsung mengestimasi kualitas partisi, seperti Xie–Beni Index. Pendekatan kedua dilakukan dengan mengevaluasi performa hasil clustering pada berbagai jumlah cluster dengan menjalankan algoritma Fuzzy C-Means secara berulang pada rentang nilai tertentu.
+Penentuan jumlah cluster optimal dapat dilakukan melalui dua pendekatan utama. Pendekatan pertama menggunakan indeks validasi tertentu yang secara langsung mengestimasi kualitas partisi, seperti Xie–Beni Index\cite{xie_validity_1991}. Pendekatan kedua dilakukan dengan mengevaluasi performa hasil clustering pada berbagai jumlah cluster dengan menjalankan algoritma Fuzzy C-Means secara berulang pada rentang nilai tertentu.
 
 Pada penelitian ini digunakan pendekatan kedua, yaitu dengan menguji jumlah cluster \(c\) pada rentang 2 hingga 10. Untuk setiap nilai \(c\), algoritma Fuzzy C-Means dijalankan dan hasil clustering dievaluasi menggunakan metrik validasi internal. Jumlah cluster optimal kemudian ditentukan berdasarkan nilai metrik evaluasi yang menunjukkan performa terbaik.Pendekatan ini dipilih karena memberikan fleksibilitas dalam mengamati stabilitas dan kualitas struktur cluster pada berbagai skenario jumlah cluster.
 
@@ -455,7 +456,7 @@ Tabel~\ref{tab:fcm-summary} menyajikan ringkasan hasil evaluasi Fuzzy C-Means un
 
 \begin{table}[h]
 \centering
-\caption{Ringkasan hasil FCM untuk berbagai nilai $c$}
+\caption{RINGKASAN HASIL FCM UNTUK BERBAGAI NILAI $c$}
 \label{tab:fcm-summary}
 \begin{tabular}{cccc l}
 \hline
@@ -469,19 +470,19 @@ $c$ & DBI & Partition Coef. & Partition Entropy & Cluster sizes \\
 \end{tabular}
 \end{table}
 
-Berdasarkan hasil evaluasi pada Tabel~\ref{tab:fcm-summary}, konfigurasi dengan jumlah cluster \(c = 2\) memberikan performa terbaik dibandingkan konfigurasi lainnya. Hal ini ditunjukkan oleh nilai Davies--Bouldin Index (DBI) yang paling rendah sebesar 1.6812, nilai Partition Coefficient (PC) tertinggi sebesar 0.5615, serta nilai Partition Entropy (PE) terendah sebesar 0.6289. 
+Berdasarkan hasil evaluasi pada Tabel~\ref{tab:fcm-summary}, konfigurasi dengan jumlah cluster \(c = 2\) memberikan performa terbaik dibandingkan konfigurasi lainnya. Hal ini ditunjukkan oleh nilai Davies--Bouldin Index (DBI)\cite{davies_cluster_1979} yang paling rendah sebesar 1.6812, nilai Partition Coefficient (PC) \cite{bezdek_pattern_1981} tertinggi sebesar 0.5615, serta nilai Partition Entropy (PE)\cite{bezdek_cluster_1973}terendah sebesar 0.6289. 
 
 Tren perubahan nilai metrik evaluasi terhadap variasi jumlah cluster ditunjukkan pada Gambar~\ref{fig:line_plot}. Terlihat bahwa peningkatan jumlah cluster tidak diikuti oleh perbaikan kualitas clustering secara konsisten, yang ditandai dengan meningkatnya nilai DBI dan menurunnya nilai Partition Coefficient. Oleh karena itu, jumlah cluster \(c = 2\) dipilih sebagai konfigurasi optimal dan digunakan pada tahap analisis selanjutnya.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.6\textwidth]{dbi_pc.png}
-    \caption{Perubahan nilai Davies--Bouldin Index dan Partition Coefficient terhadap variasi jumlah cluster}
+    \caption{Perubahan Nilai Davies--Bouldin Index Dan Partition Coefficient Terhadap Variasi Jumlah Cluster}
     \label{fig:line_plot}
 \end{figure}
 
 \subsection{Interpretasi Cluster}
 
-Setelah diperoleh jumlah cluster optimal, interpretasi dilakukan menggunakan pendekatan \textit{Per-Cluster Aggregated Statistics} (PCAS). Setiap provinsi diasosiasikan ke cluster dengan derajat keanggotaan tertinggi (\textit{hard assignment}), kemudian nilai agregat fitur untuk setiap cluster dihitung sebagai berikut:
+Setelah diperoleh jumlah cluster optimal, interpretasi dilakukan menggunakan pendekatan \textit{Per-Cluster Aggregated Statistics} (PCAS). Setiap provinsi diasosiasikan ke cluster dengan derajat keanggotaan tertinggi (\textit{hard assignment}), kemudian nilai agregat \textit{feature} untuk setiap cluster dihitung sebagai berikut:
 
 \begin{equation}
 \overline{X}_{c} = \frac{1}{N_c} 
@@ -491,13 +492,13 @@ Setelah diperoleh jumlah cluster optimal, interpretasi dilakukan menggunakan pen
 \label{eq:pcas}
 \end{equation}
 
-Selanjutnya, untuk setiap cluster dihitung statistik deskriptif berupa nilai rata-rata dan standar deviasi (\(mean \pm std\)) dari masing-masing fitur guna membandingkan karakteristik relatif antar cluster.
+Selanjutnya, untuk setiap cluster dihitung statistik deskriptif berupa nilai rata-rata dan standar deviasi (\(mean \pm std\)) dari masing-masing \textit{feature} guna membandingkan karakteristik relatif antar cluster.
 
 \subsection{Klasifikasi Risiko Kerawanan Pangan}
 
-Tahap selanjutnya adalah melakukan klasifikasi tingkat kerawanan pangan pada setiap provinsi berdasarkan karakteristik cluster yang diperoleh. Klasifikasi risiko ini tidak merupakan keluaran langsung dari algoritma Fuzzy C-Means, melainkan diturunkan melalui formulasi skor risiko berbasis fitur utama hasil clustering.
+Tahap selanjutnya adalah melakukan klasifikasi tingkat kerawanan pangan pada setiap provinsi berdasarkan karakteristik cluster yang diperoleh. Klasifikasi risiko ini tidak merupakan keluaran langsung dari algoritma Fuzzy C-Means, melainkan diturunkan melalui formulasi skor risiko berbasis \textit{feature} utama hasil clustering.
 
-Indikator utama yang digunakan dalam penentuan risiko adalah \textit{Coefficient of Variation} (CV) sebagai representasi volatilitas harga. Sementara itu, fitur \textit{trend} dan \textit{skewness} digunakan sebagai faktor koreksi untuk menangkap dinamika arah perubahan harga dan potensi kejadian ekstrem. Skor risiko untuk setiap cluster didefinisikan sebagai berikut:
+Indikator utama yang digunakan dalam penentuan risiko adalah \textit{Coefficient of Variation} (CV) sebagai representasi volatilitas harga. Sementara itu, \textit{feature} \textit{trend} dan \textit{skewness} digunakan sebagai faktor koreksi untuk menangkap dinamika arah perubahan harga dan potensi kejadian ekstrem. Skor risiko untuk setiap cluster didefinisikan sebagai berikut:
 
 \begin{equation}
 \text{RiskScore}_c = \overline{CV}_c + \alpha \,\overline{\text{Trend}}_c + \beta \,\overline{\text{Skew}}_c
@@ -505,7 +506,7 @@ Indikator utama yang digunakan dalam penentuan risiko adalah \textit{Coefficient
 \label{eq:risk-score}
 \end{equation}
 
-dengan \(\overline{CV}_c\), \(\overline{\text{Trend}}_c\), dan \(\overline{\text{Skew}}_c\) masing-masing menyatakan nilai rata-rata fitur pada cluster ke-\(c\), serta parameter pembobot \(\alpha = 100\) dan \(\beta = 0.1\) yang digunakan untuk menyesuaikan skala kontribusi masing-masing fitur.
+dengan \(\overline{CV}_c\), \(\overline{\text{Trend}}_c\), dan \(\overline{\text{Skew}}_c\) masing-masing menyatakan nilai rata-rata \textit{feature} pada cluster ke-\(c\), serta parameter pembobot \(\alpha = 100\) dan \(\beta = 0.1\) yang digunakan untuk menyesuaikan skala kontribusi masing-masing \textit{feature}.
 
 \section{Hasil dan Pembahasan}
 
@@ -513,9 +514,9 @@ dengan \(\overline{CV}_c\), \(\overline{\text{Trend}}_c\), dan \(\overline{\text
 Berdasarkan hasil konfigurasi optimal,proses clustering menggunakan parameter $c = 2$ dan $m = 2$ mencapai kondisi konvergen setelah $19$ kali iterasi.Nilai fungsi objektif akhir dengan sebesar $842.021318$ dengan nilai Partition Coefficient $0.5608$
 ,ringkasan hasil clustering lebih lengkap pada tabel \ref{tab:hasil_fcm}.
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
-\caption{Ringkasan Hasil Fuzzy C-Means Clustering ($c=2,m = 2$)}
+\caption{RINGKASAN HASIL FUZZY C-MEANS CLUSTERING ($c=2,m = 2$)}
 \label{tab:hasil_fcm}
 \begin{tabular}{lc}
 \hline
@@ -531,7 +532,12 @@ Maximum Membership & 0.8281 \\
 \end{tabular}
 \end{table}
 
-Nilai Partition Coefficient sebesar $0.5608$ menunjukkan adanya tingkat overlap antar cluster yang bersifat moderat, yang mengindikasikan bahwa sebagian provinsi memiliki karakteristik yang tidak sepenuhnya terpisah secara tegas..Dengan konfigurasi jumlah cluster yang telah ditetapkan, distribusi provinsi berdasarkan hasil clustering Fuzzy C-Means disajikan pada Tabel~\ref{tab:cluster_members}.
+Nilai Partition Coefficient sebesar $0.5608$ menunjukkan adanya tingkat tumpang tindih antar cluster yang bersifat moderat, yang mengindikasikan bahwa sebagian provinsi memiliki karakteristik yang tidak sepenuhnya terpisah secara tegas.Ukuran cluster [12, 22] menunjukkan ketidakseimbangan yang signifikan, dengan Cluster 1 mendominasi (64.7\% provinsi) dibandingkan Cluster 0 (35.3\% provinsi). Hal ini mengindikasikan bahwa mayoritas provinsi memiliki pola volatilitas harga yang relatif serupa, sementara sekelompok kecil provinsi menunjukkan karakteristik yang berbeda.
+
+Nilai maximum membership sebesar 0.8281 menunjukkan bahwa terdapat provinsi dengan keanggotaan dominan terhadap salah satu cluster, yang mengindikasikan adanya pemisahan karakteristik yang relatif jelas untuk sebagian wilayah. Namun, nilai ini juga menegaskan bahwa tidak semua provinsi memiliki keanggotaan yang sangat tegas (mendekati 1.0), yang konsisten dengan interpretasi nilai Partition Coefficient yang moderat. Hal ini menunjukkan bahwa meskipun terdapat pola yang dapat diidentifikasi, beberapa provinsi berada pada zona transisi dengan karakteristik yang tumpang tindih antara kedua cluster.
+
+Dengan konfigurasi jumlah cluster yang telah ditetapkan, distribusi provinsi berdasarkan hasil clustering Fuzzy C-Means disajikan pada Tabel~\ref{tab:cluster_members}.
+
 \begin{table}[H]
     \centering
     \caption{Komposisi Provinsi Berdasarkan Hasil Clustering Fuzzy C-Means ($c=2$)}
@@ -574,13 +580,13 @@ Hasil clustering yang diperoleh selanjutnya dianalisis untuk mengidentifikasi ka
 \subsection{Karakteristik dan Interpretasi Cluster}
 
 Metode yang digunakan untuk mengetahui karateristik tiap cluster dengan menggunakan metode \textit{Per-Cluster Aggregated Statistics (PCAS)} dengan hard assignment dari membership matrix $U$,kemudian statistik deskriptif
-(mean $\pm$ std) dihitung per feature type dengan agregasi lintas
+(mean $\pm$ std) dihitung per \textit{feature} type dengan agregasi lintas
 komoditas.tabel hasil karateristik cluster disajikan di tabel \ref{tab:cluster-profiles}.
 komoditas:
 
 \begin{table}[H]
 \centering
-\caption{Karakteristik Feature Types Fuzzy C-Means ($c=2$)}
+\caption{KARAKTERISTIK TIPE \textit{FEATURE} PADA FUZZY C-MEANS ($c=2$)}
 \label{tab:cluster-profiles}
 \begin{tabular}{lcccc}
 \hline
@@ -597,7 +603,7 @@ Skewness & 0.158 ± 0.387  & 0.180 ± 0.318 & -12.5\% & Distribusi relatif mirip
 
 Berdasarkan Tabel~\ref{tab:cluster-profiles}, cluster 0 memiliki nilai rata-rata harga (\textit{mean}) yang lebih tinggi dibandingkan cluster 1, dengan selisih sekitar 15.3\%. Sebaliknya, nilai \textit{Coefficient of Variation} (CV) pada cluster 1 lebih tinggi sekitar 25.3\%, yang menunjukkan bahwa cluster dengan harga relatif lebih rendah cenderung memiliki volatilitas yang lebih tinggi.
 
-Untuk fitur \textit{trend}, \textit{autocorrelation}, dan \textit{skewness}, perbedaan antar cluster relatif kecil, masing-masing sekitar 11.3\%, 3.8\%, dan 12.5\%. Hal ini mengindikasikan bahwa perbedaan utama antar cluster lebih didominasi oleh tingkat harga dan volatilitas, sementara karakteristik dinamika temporal relatif serupa.
+Untuk \textit{feature} \textit{trend}, \textit{autocorrelation}, dan \textit{skewness}, perbedaan antar cluster relatif kecil, masing-masing sekitar 11.3\%, 3.8\%, dan 12.5\%. Hal ini mengindikasikan bahwa perbedaan utama antar cluster lebih didominasi oleh tingkat harga dan volatilitas, sementara karakteristik dinamika temporal relatif serupa.
 
 Perbedaan karakteristik ini selanjutnya digunakan sebagai dasar untuk mengkaji tingkat kejelasan partisi cluster dan pola keanggotaan fuzzy pada masing-masing provinsi.
 
@@ -609,7 +615,7 @@ Selanjutnya, analisis distribusi derajat keanggotaan (\textit{membership}) dilak
 
 \begin{table}[h!]
 \centering
-\caption{Distribusi Derajat Keanggotaan Fuzzy per Cluster}
+\caption{DISTRIBUSI DERAJAT KEANGGOTAAN FUZZY PER CLUSTER}
 \label{tab:fuzzy-membership-summary}
 \begin{tabular}{lccc}
 \hline
@@ -622,15 +628,15 @@ Ambigu         & $0.4 \le u_{ik} < 0.6$ & 6 & 6 \\
 \end{tabular}
 \end{table}
 
-Hasil analisis menunjukkan bahwa hanya terdapat dua provinsi yang memiliki derajat keanggotaan dominan terhadap cluster tertentu. Sebaliknya, kategori keanggotaan menengah mendominasi hasil clustering dengan total 20 provinsi pada kedua cluster. Selain itu, masih terdapat 12 provinsi yang berada pada kategori keanggotaan ambigu, yang mengindikasikan adanya overlap karakteristik antar cluster.
+Hasil analisis menunjukkan bahwa hanya terdapat dua provinsi yang memiliki derajat keanggotaan dominan terhadap cluster tertentu. Sebaliknya, kategori keanggotaan menengah mendominasi hasil clustering dengan total 20 provinsi pada kedua cluster. Selain itu, masih terdapat 12 provinsi yang berada pada kategori keanggotaan ambigu, yang mengindikasikan adanya karakteristik tumpang tindih antar cluster.
 
 lebih lanjut pada histogram pada gambar \ref{fig:membership_distribution},menunjukkan distribusi derajat keanggotaan fuzzy untuk masing-masing cluster. Terlihat bahwa distribusi keanggotaan pada cluster 0 cenderung berada pada rentang menengah, dengan nilai rata-rata sekitar 0.43, yang mengindikasikan adanya sejumlah provinsi dengan keanggotaan ambigu. Sebaliknya, cluster 1 menunjukkan nilai keanggotaan yang relatif lebih tinggi dengan rata-rata sekitar 0.57, yang mencerminkan partisi yang lebih jelas dibandingkan cluster 0.
-Sementara itu nilai mean \textit{Adjusted Rand Index} (ARI) bernilai 0.6647 dengan 50 boostrap umum mengindikasikan bahwa solusi dua cluster bersifat cukup stabil dan dapat dilakukan analisis lanjutan.
+Sementara itu nilai mean \textit{Adjusted Rand Index} (ARI) \cite{hubert_comparing_1985} bernilai 0.6647 dengan 50 boostrap umum mengindikasikan bahwa solusi dua cluster bersifat cukup stabil dan dapat dilakukan analisis lanjutan.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{membership_distribution.png}
-    \caption{Distribusi Derajat }
+    \caption{Distribusi Derajat Keanggotaan}
     \label{fig:membership_distribution}
 \end{figure}
 
@@ -655,7 +661,7 @@ sebagai kelompok dengan \textit{risiko tinggi} terhadap krisis pangan.
 
 \begin{table}[h!]
 \centering
-\caption{Klasifikasi Risiko Berdasarkan Karakteristik Cluster}
+\caption{KLASIFIKASI RISIKO BERDASARKAN KARAKTERISTIK CLUSTER}
 \label{tab:risk-cluster}
 \begin{tabular}{ccc}
 \hline
@@ -671,7 +677,7 @@ Sementara itu, pada Gambar \ref{fig:peta} ditunjukkan sebaran distribusi provins
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{peta_cluster.png}
-    \caption{Peta distribusi geografis cluster risiko pangan}
+    \caption{Peta Distribusi Geografis Cluster Risiko Pangan}
     \label{fig:peta}
 \end{figure}
 
@@ -685,93 +691,94 @@ Sementara itu, pada Gambar \ref{fig:peta} ditunjukkan sebaran distribusi provins
 \subsubsection{Interpretasi Pola Geografis Cluster}
 Hasil clustering menunjukkan adanya pola geografis yang jelas dalam distribusi risiko volatilitas harga pangan antarprovinsi. Sebanyak 22 dari 34 provinsi (65\%) tergolong dalam Cluster 1 dengan tingkat volatilitas harga relatif tinggi (CV = 0.1314), sementara 12 provinsi (35\%) berada pada Cluster 0 dengan volatilitas lebih rendah (CV = 0.0981). Secara spasial, seluruh provinsi di Pulau Jawa secara konsisten tergolong dalam Cluster 1, sedangkan seluruh provinsi di Kalimantan berada pada Cluster 0. Pola ini mengindikasikan adanya faktor geografis dan struktural yang sistematis dalam membentuk dinamika volatilitas harga pangan antarwilayah.
 
-Dominasi Pulau Jawa dalam Cluster 1 sejalan dengan temuan empiris sebelumnya yang mengidentifikasi Jawa sebagai pusat transmisi volatilitas harga pangan nasional \cite{ref2}. Penelitian tersebut menunjukkan adanya keterkaitan volatilitas yang kuat dari Jawa ke wilayah lain, termasuk Sumatra, Kalimantan, dan Papua. Dalam konteks ini, volatilitas harga yang lebih tinggi di Jawa tidak hanya merefleksikan ketidakstabilan lokal, tetapi juga peran Jawa sebagai pusat pembentukan harga dalam sistem pangan nasional.
+Dominasi Pulau Jawa dalam Cluster 1 sejalan dengan temuan empiris sebelumnya yang mengidentifikasi Jawa sebagai pusat transmisi volatilitas harga pangan nasional \cite{theresia_spillover_2025}. Penelitian tersebut menunjukkan adanya keterkaitan volatilitas yang kuat dari Jawa ke wilayah lain, termasuk Sumatra, Kalimantan, dan Papua. Dalam konteks ini, volatilitas harga yang lebih tinggi di Jawa tidak hanya merefleksikan ketidakstabilan lokal, tetapi juga peran Jawa sebagai pusat pembentukan harga dalam sistem pangan nasional.
 
-Perbedaan karakteristik antara Jawa dan Kalimantan dapat dipahami melalui tingkat integrasi pasar yang berbeda. Studi Bank Dunia \cite{ref11} menunjukkan bahwa pasar pangan di Jawa memiliki tingkat integrasi spasial yang jauh lebih tinggi dibandingkan wilayah di luar Jawa. Integrasi pasar yang kuat memungkinkan transmisi harga yang cepat antarwilayah, sehingga guncangan harga di satu lokasi dapat segera menyebar ke wilayah lain. Mekanisme ini berkontribusi terhadap volatilitas agregat yang lebih tinggi pada wilayah yang terintegrasi secara kuat.
+Perbedaan karakteristik antara Jawa dan Kalimantan dapat dipahami melalui tingkat integrasi pasar yang berbeda. Studi Bank Dunia \cite{WorldBank2019FoodMarket} menunjukkan bahwa pasar pangan di Jawa memiliki tingkat integrasi spasial yang jauh lebih tinggi dibandingkan wilayah di luar Jawa. Integrasi pasar yang kuat memungkinkan transmisi harga yang cepat antarwilayah, sehingga guncangan harga di satu lokasi dapat segera menyebar ke wilayah lain. Mekanisme ini berkontribusi terhadap volatilitas agregat yang lebih tinggi pada wilayah yang terintegrasi secara kuat.
 
 Sebaliknya, pasar pangan di Kalimantan dan wilayah timur Indonesia cenderung memiliki tingkat integrasi yang lebih lemah, sehingga transmisi harga antarwilayah berlangsung lebih lambat. Keterbatasan ini menyebabkan guncangan harga bersifat lebih terlokalisasi dan tidak segera menyebar, yang pada agregat wilayah tercermin sebagai volatilitas yang relatif lebih rendah. Namun, kondisi tersebut juga mengindikasikan adanya keterbatasan mekanisme penyeimbang harga lintas wilayah.
 
-Peran infrastruktur transportasi dalam membentuk pola volatilitas harga pangan bersifat kontekstual. Penelitian sebelumnya menunjukkan bahwa konektivitas jalan yang baik dapat menurunkan volatilitas harga melalui peningkatan efisiensi distribusi \cite{ref10}. Namun, dalam konteks wilayah dengan tingkat integrasi pasar yang sudah tinggi seperti Jawa, konektivitas yang kuat justru mempercepat penyebaran guncangan harga, sehingga berpotensi meningkatkan volatilitas agregat. Sebaliknya, keterbatasan infrastruktur di wilayah seperti Kalimantan dapat berfungsi sebagai penghambat transmisi volatilitas antarwilayah, meskipun dengan konsekuensi berupa tingkat harga rata-rata yang lebih tinggi.
+Peran infrastruktur transportasi dalam membentuk pola volatilitas harga pangan bersifat kontekstual. Penelitian sebelumnya menunjukkan bahwa konektivitas jalan yang baik dapat menurunkan volatilitas harga melalui peningkatan efisiensi distribusi \cite{lambert_road_2025}. Namun, dalam konteks wilayah dengan tingkat integrasi pasar yang sudah tinggi seperti Jawa, konektivitas yang kuat justru mempercepat penyebaran guncangan harga, sehingga berpotensi meningkatkan volatilitas agregat. Sebaliknya, keterbatasan infrastruktur di wilayah seperti Kalimantan dapat berfungsi sebagai penghambat transmisi volatilitas antarwilayah, meskipun dengan konsekuensi berupa tingkat harga rata-rata yang lebih tinggi.
 
 Temuan ini mengungkap adanya paradoks stabilitas pada wilayah dengan tingkat integrasi pasar rendah. Provinsi-provinsi dalam Cluster 0 menunjukkan volatilitas harga yang lebih stabil bukan karena sistem pangan yang lebih tangguh, melainkan akibat keterisolasian spasial yang membatasi transmisi guncangan eksternal. Di satu sisi, kondisi ini melindungi wilayah tersebut dari volatilitas nasional; di sisi lain, keterbatasan integrasi meningkatkan kerentanan terhadap guncangan pasokan lokal yang sulit segera diimbangi melalui mekanisme perdagangan antarwilayah.
 
 Dengan demikian, hasil clustering tidak hanya merefleksikan perbedaan tingkat volatilitas harga antarwilayah, tetapi juga mengungkap struktur spasial sistem pangan Indonesia yang bersifat terfragmentasi. Wilayah dengan integrasi pasar tinggi menghadapi risiko volatilitas sistemik, sementara wilayah dengan integrasi rendah cenderung mengalami stabilitas relatif dengan kerentanan terhadap guncangan lokal.
 
 \subsubsection{Komparasi dengan Penelitian Sebelumnya}
-Penelitian sebelumnya yang menerapkan \textit{Dynamic Time Warping} (DTW) untuk clustering harga beras antar provinsi di Indonesia \cite{ref4} mengelompokkan wilayah berdasarkan kemiripan pola temporal deret waktu harga. Pendekatan DTW menekankan kesamaan bentuk pergerakan harga dari waktu ke waktu, sehingga provinsi dengan pola fluktuasi serupa dapat berada dalam satu cluster meskipun memiliki tingkat volatilitas yang berbeda.
+Penelitian sebelumnya yang menerapkan \textit{Dynamic Time Warping} (DTW) untuk clustering harga beras antar provinsi di Indonesia \cite{tsabitah_implementation_2025} mengelompokkan wilayah berdasarkan kemiripan pola temporal data deret waktu harga. Pendekatan DTW menekankan kesamaan bentuk pergerakan harga dari waktu ke waktu, sehingga provinsi dengan pola fluktuasi serupa dapat berada dalam satu cluster meskipun memiliki tingkat volatilitas yang berbeda.
 
 Sebaliknya, penelitian ini mengadopsi pendekatan \textit{feature-based clustering} dengan mengekstraksi karakteristik statistik dan temporal harga sebagai dasar pengelompokan. Perbedaan pendekatan ini menghasilkan fokus analisis yang berbeda: DTW menjawab pertanyaan mengenai kesamaan pola harga, sementara clustering berbasis volatilitas dalam penelitian ini berfokus pada kesamaan tingkat risiko ketidakstabilan harga antarwilayah. Meskipun demikian, kedua pendekatan menunjukkan indikasi konsisten terhadap karakteristik unik beberapa wilayah, yang mengisyaratkan adanya dinamika harga yang khas baik dari sisi pola maupun volatilitas.
 
-Studi sebelumnya mengenai clustering ketahanan pangan di Indonesia \cite{ref5} umumnya menggunakan indikator struktural berbasis data BPS—seperti aspek ketersediaan, akses, dan pemanfaatan pangan—serta mengevaluasi baik pendekatan hard clustering (K-Means, K-Medoids) maupun soft clustering (Fuzzy C-Means). Meskipun pendekatan soft clustering turut dianalisis, hasil evaluasi menunjukkan bahwa metode K-Means menghasilkan struktur cluster paling optimal, sehingga wilayah diklasifikasikan secara tegas ke dalam kategori rawan dan tidak rawan pangan..
+Studi sebelumnya mengenai clustering ketahanan pangan di Indonesia \cite{prastanika_analisis_2023} umumnya menggunakan indikator struktural berbasis data BPS—seperti aspek ketersediaan, akses, dan pemanfaatan pangan—serta mengevaluasi baik pendekatan hard clustering (K-Means, K-Medoids) maupun soft clustering (Fuzzy C-Means). Meskipun pendekatan soft clustering turut dianalisis, hasil evaluasi menunjukkan bahwa metode K-Means menghasilkan struktur cluster paling optimal, sehingga wilayah diklasifikasikan secara tegas ke dalam kategori rawan dan tidak rawan pangan..
 
-Penelitian ini berbeda dari studi sebelumnya baik dari sisi data maupun metode yang digunakan. Data \textit{time series} harga komoditas dimanfaatkan untuk menangkap dinamika dan volatilitas harga pangan, sehingga analisis risiko ketidakstabilan pangan menjadi lebih relevan. Selain itu, metode Fuzzy C-Means digunakan untuk mengakomodasi ketidakpastian dalam pengelompokan wilayah, di mana suatu wilayah tidak harus sepenuhnya berada dalam satu cluster tertentu. Pendekatan ini sesuai dengan karakteristik volatilitas harga, karena perbedaan antara kondisi stabil dan tidak stabil bersifat bertahap, sehingga memungkinkan beberapa wilayah berada pada posisi peralihan antar kelompok risiko.
+Penelitian ini berbeda dari studi sebelumnya baik dari sisi data maupun metode yang digunakan. Data deret waktu harga komoditas dimanfaatkan untuk menangkap dinamika dan volatilitas harga pangan, sehingga analisis risiko ketidakstabilan pangan menjadi lebih relevan. Selain itu, metode Fuzzy C-Means digunakan untuk mengakomodasi ketidakpastian dalam pengelompokan wilayah, di mana suatu wilayah tidak harus sepenuhnya berada dalam satu cluster tertentu. Pendekatan ini sesuai dengan karakteristik volatilitas harga, karena perbedaan antara kondisi stabil dan tidak stabil bersifat bertahap, sehingga memungkinkan beberapa wilayah berada pada posisi peralihan antar kelompok risiko.
 
-Sementara itu hasil clustering dalam penelitian ini menunjukkan konsistensi konseptual dengan studi mengenai \textit{price spillover effect} di Indonesia \cite{ref2}, yang mengidentifikasi Pulau Jawa sebagai pusat transmisi volatilitas harga pangan ke wilayah lain. Pola spasial cluster yang dihasilkan memperlihatkan konsentrasi wilayah berisiko tinggi pada kawasan yang secara ekonomi dan logistik terintegrasi kuat dengan Jawa.
+Sementara itu hasil clustering dalam penelitian ini menunjukkan konsistensi konseptual dengan studi mengenai \textit{price spillover effect} di Indonesia \cite{theresia_spillover_2025}, yang mengidentifikasi Pulau Jawa sebagai pusat transmisi volatilitas harga pangan ke wilayah lain. Pola spasial cluster yang dihasilkan memperlihatkan konsentrasi wilayah berisiko tinggi pada kawasan yang secara ekonomi dan logistik terintegrasi kuat dengan Jawa.
 
-Namun, penelitian ini melengkapi analisis spillover dengan menyediakan pemetaan heterogenitas risiko antarwilayah berdasarkan karakteristik volatilitas harga. Dengan demikian, analisis spillover menjelaskan mekanisme transmisi volatilitas, sementara pendekatan clustering berbasis fitur dalam penelitian ini mengidentifikasi variasi tingkat paparan dan respons wilayah terhadap guncangan harga tersebut.
+Namun, penelitian ini melengkapi analisis spillover dengan menyediakan pemetaan heterogenitas risiko antarwilayah berdasarkan karakteristik volatilitas harga. Dengan demikian, analisis spillover menjelaskan mekanisme transmisi volatilitas, sementara pendekatan clustering berbasis \textit{feature} dalam penelitian ini mengidentifikasi variasi tingkat paparan dan respons wilayah terhadap guncangan harga tersebut.
 
 \subsubsection{Keterbatasan Penelitian}
 
-Penelitian ini memiliki beberapa keterbatasan yang perlu diperhatikan dalam interpretasi hasil. Pertama, analisis clustering dilakukan berdasarkan karakteristik statistik deret waktu harga komoditas tanpa mempertimbangkan faktor struktural seperti produksi, distribusi, dan kondisi sosial ekonomi, sehingga hasil pengelompokan lebih merefleksikan risiko ketidakstabilan harga daripada ketahanan pangan secara komprehensif. Kedua, pendekatan clustering bersifat statis terhadap periode pengamatan, sehingga dinamika perubahan klaster antarwaktu belum dianalisis secara eksplisit. Selain itu, analisis spillover difokuskan pada hubungan antarwilayah utama, sehingga potensi pengaruh dari faktor eksternal seperti kebijakan pemerintah atau gangguan global belum sepenuhnya tercakup.
+Penelitian ini memiliki beberapa keterbatasan yang perlu diperhatikan dalam interpretasi hasil. Pertama, analisis clustering dilakukan berdasarkan karakteristik statistik data deret waktu harga komoditas tanpa mempertimbangkan faktor struktural seperti produksi, distribusi, dan kondisi sosial ekonomi, sehingga hasil pengelompokan lebih merefleksikan risiko ketidakstabilan harga daripada ketahanan pangan secara komprehensif. Kedua, pendekatan clustering bersifat statis terhadap periode pengamatan, sehingga dinamika perubahan cluster antarwaktu belum dianalisis secara eksplisit. Selain itu, analisis spillover difokuskan pada hubungan antarwilayah utama, sehingga potensi pengaruh dari faktor eksternal seperti kebijakan pemerintah atau gangguan global belum sepenuhnya tercakup.
 
 \section{kesimpulan}
-Penelitian ini mengkaji pengelompokan risiko ketidakstabilan pangan di Indonesia dengan memanfaatkan deret waktu harga komoditas sebagai dasar analisis, sehingga mampu menangkap dinamika dan volatilitas harga antarwilayah. Melalui pendekatan feature-based clustering yang mengekstraksi karakteristik statistik utama  data \textit{time series}, penelitian ini memberikan perspektif alternatif terhadap studi ketahanan pangan yang umumnya berbasis indikator struktural. Penerapan metode Fuzzy C-Means memungkinkan representasi ketidakpastian dan zona transisi antarwilayah, di mana beberapa provinsi tidak diklasifikasikan secara tegas ke dalam satu kelompok risiko, melainkan memiliki tingkat keanggotaan pada lebih dari satu klaster.
+Penelitian ini mengkaji pengelompokan risiko ketidakstabilan pangan di Indonesia dengan memanfaatkan data deret waktu harga komoditas sebagai dasar analisis, sehingga mampu menangkap dinamika dan volatilitas harga antarwilayah. Melalui pendekatan \textit{feature} based clustering yang mengekstraksi karakteristik statistik utama  data deret waktu, penelitian ini memberikan perspektif alternatif terhadap studi ketahanan pangan yang umumnya berbasis indikator struktural. Penerapan metode Fuzzy C-Means memungkinkan representasi ketidakpastian dan zona transisi antarwilayah, di mana beberapa provinsi tidak diklasifikasikan secara tegas ke dalam satu kelompok risiko, melainkan memiliki tingkat keanggotaan pada lebih dari satu cluster.
 
 Hasil clustering menunjukkan adanya heterogenitas risiko ketidakstabilan harga antarwilayah yang konsisten dengan pola spasial dan ekonomi Indonesia, serta diperkuat oleh temuan analisis spillover harga yang mengindikasikan peran wilayah tertentu sebagai pusat transmisi volatilitas. Temuan ini menegaskan bahwa analisis berbasis volatilitas harga dapat melengkapi pendekatan ketahanan pangan konvensional, khususnya dalam mengidentifikasi wilayah dengan risiko laten yang bersifat gradual dan dinamis, sehingga relevan sebagai dasar pertimbangan dalam perumusan kebijakan stabilisasi harga dan mitigasi risiko pangan.
 
+\bibliographystyle{ieeetr}
+\bibliography{Paper}
+% \begin{thebibliography}{10}
+% \bibitem{ref1}
+% FAO, ``Food Security,'' \textit{FAO Policy Brief}, no.~2, Rome, 2021.
+% \bibitem{ref2}
+% A. Theresia, M. Ikhsan, F. N. Kacaribu, et al., ``Spillover Effect of Food Producer Price Volatility in Indonesia,'' \textit{Economies}, vol. 13, no. 9, p. 256, 2025.
+% \bibitem{ref3}
+% C.~J.~Anwar, I.~Suhendra, A.~Srimulyani, V.~M.~Zahara, R.~A.~F.~Ginanjar, and S.~C.~Suci,
+% ``Food Price and Inflation Volatilities during Covid-19 Period: Empirical Study of a Region in Indonesia,''
+% \textit{WSEAS Transactions on Business and Economics},
+% vol.~20, pp.~1839--1848, 2023,
+% doi:10.37394/23207.2023.20.161.
 
-\begin{thebibliography}{10}
-\bibitem{ref1}
-FAO, ``Food Security,'' \textit{FAO Policy Brief}, no.~2, Rome, 2006.
-\bibitem{ref2}
-A. Theresia, M. Ikhsan, F. N. Kacaribu, et al., ``Spillover Effect of Food Producer Price Volatility in Indonesia,'' \textit{Economies}, vol. 13, no. 9, p. 256, 2025.
-\bibitem{ref3}
-C.~J.~Anwar, I.~Suhendra, A.~Srimulyani, V.~M.~Zahara, R.~A.~F.~Ginanjar, and S.~C.~Suci,
-``Food Price and Inflation Volatilities during Covid-19 Period: Empirical Study of a Region in Indonesia,''
-\textit{WSEAS Transactions on Business and Economics},
-vol.~20, pp.~1839--1848, 2023,
-doi:10.37394/23207.2023.20.161.
-
-\bibitem{ref4}
-A.~H.~Rizaldi, I.~M.~D.~Utama, and R.~Andriani,
-``Implementation of Time Series Clustering with DTW to Clustering and Forecasting Rice Prices Each Provinces in Indonesia,''
-\textit{INFERENSI: Jurnal Statistika dan Aplikasinya},
-vol.~9, no.~1, pp.~1--12, 2025.
+% \bibitem{ref4}
+% A.~H.~Rizaldi, I.~M.~D.~Utama, and R.~Andriani,
+% ``Implementation of Time Series Clustering with DTW to Clustering and Forecasting Rice Prices Each Provinces in Indonesia,''
+% \textit{INFERENSI: Jurnal Statistika dan Aplikasinya},
+% vol.~9, no.~1, pp.~1--12, 2025.
 
 
-\bibitem{ref5}
-W.~W.~Prastanika and A.~W.~Wijayanto,
-``Analisis Hard dan Soft Clustering Untuk Pengelompokan Indikator Ketahanan Pangan Indonesia 2021,''
-\textit{JUSTIN (Jurnal Sistem dan Teknologi Informasi)},
-vol.~11, no.~4, pp.~596--604, Oct.~2023,
-doi:10.26418/justin.v11i4.68400.
+% \bibitem{ref5}
+% W.~W.~Prastanika and A.~W.~Wijayanto,
+% ``Analisis Hard dan Soft Clustering Untuk Pengelompokan Indikator Ketahanan Pangan Indonesia 2021,''
+% \textit{JUSTIN (Jurnal Sistem dan Teknologi Informasi)},
+% vol.~11, no.~4, pp.~596--604, Oct.~2023,
+% doi:10.26418/justin.v11i4.68400.
 
-\bibitem{ref6}
-A.~López-Oriona, J.~A.~Vilar, and P.~D’Urso,
-``Quantile-based fuzzy clustering of multivariate time series in the frequency domain,''
-\textit{Fuzzy Sets and Systems},
-preprint, arXiv:2109.03728, 2021.
+% \bibitem{ref6}
+% A.~López-Oriona, J.~A.~Vilar, and P.~D’Urso,
+% ``Quantile-based fuzzy clustering of multivariate time series in the frequency domain,''
+% \textit{Fuzzy Sets and Systems},
+% preprint, arXiv:2109.03728, 2021.
 
-\bibitem{ref7}
-Poppe, M., Veerkamp, R.F., van Pelt, M.L., \& Mulder, H.A. (2020). 
-Exploration of variance, autocorrelation, and skewness of deviations from lactation curves as resilience indicators for breeding. 
-\textit{Journal of Dairy Science}, 103(2), 1667--1684. 
-https://doi.org/10.3168/jds.2019-17290
+% \bibitem{ref7}
+% Poppe, M., Veerkamp, R.F., van Pelt, M.L., \& Mulder, H.A. (2020). 
+% Exploration of variance, autocorrelation, and skewness of deviations from lactation curves as resilience indicators for breeding. 
+% \textit{Journal of Dairy Science}, 103(2), 1667--1684. 
+% https://doi.org/10.3168/jds.2019-17290
 
-\bibitem{ref8} Datavidia, ``Indonesia Commodity Price,'' Kaggle, 2025. [Online]. Tersedia: https://www.kaggle.com/datasets/datavidia/indonesia-commodity-price/data. [Diakses: Des. 2025].
+% \bibitem{ref8} Datavidia, ``Indonesia Commodity Price,'' Kaggle, 2025. [Online]. Tersedia: https://www.kaggle.com/datasets/datavidia/indonesia-commodity-price/data. [Diakses: Des. 2025].
 
-\bibitem{ref9}
-S.~Askari,
-``Fuzzy C-Means clustering algorithm for data with unequal cluster sizes and contaminated with noise and outliers: Review and development,''
-\textit{Expert Systems with Applications},
-vol.~165, p.~113856, 2021.
+% \bibitem{ref9}
+% S.~Askari,
+% ``Fuzzy C-Means clustering algorithm for data with unequal cluster sizes and contaminated with noise and outliers: Review and development,''
+% \textit{Expert Systems with Applications},
+% vol.~165, p.~113856, 2021.
 
-\bibitem{ref10}
-Lambert, L. H., Schoeneman Jr., J. P., Lambert, D. M., and Brienen, M. W. (2025). Road networks and food price volatility. \textit{Global Food Security}, 47, 100884. https://doi.org/10.1016/j.gfs.2025.100884
+% \bibitem{ref10}
+% Lambert, L. H., Schoeneman Jr., J. P., Lambert, D. M., and Brienen, M. W. (2025). Road networks and food price volatility. \textit{Global Food Security}, 47, 100884. https://doi.org/10.1016/j.gfs.2025.100884
 
-\bibitem{ref11}
-M. Haile, J. J. Nijhoff, and S. Jaffee, ``Food market integration and price differential across provinces in Indonesia,'' World Bank Group, Washington, DC, Tech. Rep., March 2019. [Online]. Available: https://documents.worldbank.org/en/publication/documents-reports/documentdetail
+% \bibitem{ref11}
+% M. Haile, J. J. Nijhoff, and S. Jaffee, ``Food market integration and price differential across provinces in Indonesia,'' World Bank Group, Washington, DC, Tech. Rep., March 2019. [Online]. Available: https://documents.worldbank.org/en/publication/documents-reports/documentdetail
 
-\end{thebibliography}
+% \end{thebibliography}
 
 \end{document}
