@@ -116,10 +116,6 @@ This work is licensed under the [MIT License](LICENSE) - see the LICENSE file fo
 - **Email:** yusuf@uho.edu
 - **Institution:** Universitas HaluOleo
 
-## Acknowledgments
-
-Add acknowledgments here (funding sources, advisors, contributors, etc.).
-
 ---
 
 **Last updated:** December 2025
